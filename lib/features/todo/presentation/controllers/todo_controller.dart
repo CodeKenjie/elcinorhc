@@ -39,6 +39,10 @@ class TodoController extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _formattedError(Object error) {
+    return error.toString().replaceFirst('Exception: ', '');
+  }
+
   Future<bool> loadTodos() async {
     _clearError();
     _setLoading(true);
@@ -46,7 +50,8 @@ class TodoController extends ChangeNotifier {
       _todos = await getAllUseCase();
       return true;
     } catch (err) {
-      _errorMessage = 'Failed to load the todo list.';
+      _errorMessage = _formattedError(err);
+      notifyListeners();
       return false;
     } finally {
       _setLoading(false);
@@ -61,7 +66,7 @@ class TodoController extends ChangeNotifier {
       _todos.add(todo);
       return true;
     } catch (err) {
-      _errorMessage = 'Failed to create task.';
+      _errorMessage = _formattedError(err);
       return false;
     } finally {
       _setLoading(false);
@@ -82,13 +87,13 @@ class TodoController extends ChangeNotifier {
           title: title,
           completed: oldTodo.completed,
           createdAt: oldTodo.createdAt,
-          expiresAt: expiresAt ?? oldTodo.expiresAt
+          expiresAt: expiresAt
         );
       }
 
       return true;
     } catch (err) {
-      _errorMessage = 'Failed to update todo.';
+      _errorMessage = _formattedError(err);
       return false;
     } finally {
       _setLoading(false);
@@ -115,7 +120,7 @@ class TodoController extends ChangeNotifier {
 
       return true;
     } catch (err) {
-      _errorMessage = 'Failed to update task status.';
+      _errorMessage = _formattedError(err);
       return false;
     } finally {
       _setLoading(false);
@@ -130,7 +135,7 @@ class TodoController extends ChangeNotifier {
       _todos.removeWhere((todo) => todo.id == id);
       return true;
     } catch (err) {
-      _errorMessage = 'Failed to delete task';
+      _errorMessage = _formattedError(err);
       return false;
     } finally {
       _setLoading(false);

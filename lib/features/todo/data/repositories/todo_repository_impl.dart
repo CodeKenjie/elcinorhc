@@ -8,8 +8,7 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<List<Todo>> getTodos() async {
-    final todos = await localDataSource.getTodos();
-    return todos.cast<Todo>();
+    return await localDataSource.getTodos();
   }
 
   @override
@@ -17,15 +16,7 @@ class TodoRepositoryImpl implements TodoRepository {
     required String title,
     DateTime? expiresAt
   }) async {
-    final todo = await localDataSource.addTodo(title: title, expiresAt: expiresAt);
-
-    return Todo(
-      id: todo.id,
-      title: todo.title,
-      completed: todo.completed,
-      createdAt: todo.createdAt,
-      expiresAt: todo.expiresAt
-    );
+    return await localDataSource.addTodo(title: title, expiresAt: expiresAt);
   }
 
   @override

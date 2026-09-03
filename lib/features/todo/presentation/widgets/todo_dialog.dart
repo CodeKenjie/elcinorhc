@@ -73,7 +73,6 @@ class _TodoDialogState extends State<TodoDialog> {
           title: Text(widget.isEditing ? 'Edit Task' : 'Create Task'),
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
               children: [
                 TextField(
                   controller: _titleController,

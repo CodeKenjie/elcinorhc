@@ -36,7 +36,6 @@ class TodoController extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
-    notifyListeners();
   }
 
   String _formattedError(Object error) {
@@ -47,7 +46,7 @@ class TodoController extends ChangeNotifier {
     _clearError();
     _setLoading(true);
     try {
-      _todos = await getAllUseCase();
+      _todos = List<Todo>.from(await getAllUseCase());
       return true;
     } catch (err) {
       _errorMessage = _formattedError(err);
@@ -58,11 +57,22 @@ class TodoController extends ChangeNotifier {
     }
   }
 
-  Future<bool> create({ required String title, DateTime? expiresAt }) async {
+  Future<bool> create({ int? planId, required String title, DateTime? expiresAt }) async {
     _clearError();
     _setLoading(true);
+
+    if(title.isEmpty) {
+      _errorMessage = "Title can't be blank.";
+      return false;
+    }
+
     try {
-      final todo = await addUseCase( title: title, expiresAt: expiresAt );
+      final todo = await addUseCase( 
+        planId: planId, 
+        title: title, 
+        expiresAt: expiresAt 
+      );
+
       _todos.add(todo);
       return true;
     } catch (err) {
@@ -73,22 +83,26 @@ class TodoController extends ChangeNotifier {
     }
   }
 
-  Future<bool> update({ required int id, required String title, DateTime? expiresAt }) async {
+  Future<bool> update({ required int id, int? planId, required String title, DateTime? expiresAt }) async {
     _clearError();
     _setLoading(true);
+
+    if(title.isEmpty) {
+      _errorMessage = "Title can't be blank.";
+      return false;
+    }
+
     try {
-      await updateUseCase( id: id, title: title, expiresAt: expiresAt );
+      await updateUseCase( 
+        id: id, 
+        planId: planId, 
+        title: title, 
+        expiresAt: expiresAt 
+      );
 
       final index = _todos.indexWhere((todo) => todo.id == id);
       if(index != -1) {
-        final oldTodo = _todos[index];
-        _todos[index] = Todo( 
-          id: oldTodo.id,
-          title: title,
-          completed: oldTodo.completed,
-          createdAt: oldTodo.createdAt,
-          expiresAt: expiresAt
-        );
+        _todos[index] = _todos[index].copyWith(planId: planId, title: title, expiresAt: expiresAt);
       }
 
       return true;
@@ -108,19 +122,15 @@ class TodoController extends ChangeNotifier {
       final index = _todos.indexWhere((todo) => todo.id == id);
 
       if(index != -1) {
-        final oldTodo = _todos[index];
-        _todos[index] = Todo(
-          id: oldTodo.id,
-          title: oldTodo.title,
-          completed: completed,
-          createdAt: oldTodo.createdAt,
-          expiresAt: oldTodo.expiresAt
-        );
+        _todos[index] = _todos[index].copyWith(completed: completed);
       }
 
       return true;
-    } catch (err) {
+    } catch (err, stack) {
+      debugPrint('updateStatus ERROR: $err');
+      debugPrint('$stack');
       _errorMessage = _formattedError(err);
+      notifyListeners();
       return false;
     } finally {
       _setLoading(false);

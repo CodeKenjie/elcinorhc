@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:elcinorch/features/todo/domain/entities/todo.dart';
 
 class TodoCard extends StatelessWidget {
-  final String title;
-  final bool state;
-  final DateTime createdAt;
-  final DateTime? expiresAt;
-  final ValueChanged<bool?>? onChanged;
+  final Todo todo; 
+  final ValueChanged<bool>? onChanged;
   final Function(BuildContext)? onEdit;
   final Function(BuildContext)? onDelete;
 
   const TodoCard({ 
     super.key,
-    required this.title,
-    required this.state,
-    required this.createdAt,
-    this.expiresAt,
+    required this.todo,
     this.onChanged,
     this.onEdit,
     this.onDelete
@@ -26,7 +21,7 @@ class TodoCard extends StatelessWidget {
     if(date == null) {
       return '';
     }
-    return DateFormat('MM dd, yyyy EEE').format(date).toString();
+    return DateFormat('MMM dd, yyyy EEE').format(date).toString();
   }
 
   @override
@@ -34,32 +29,28 @@ class TodoCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 5),
       child: Slidable(
-        startActionPane: ActionPane(
+        startActionPane: todo.completed ? null : ActionPane(
           motion: ScrollMotion(), 
           extentRatio: 0.25,
           children: [
-            if(state == false)...[
-              SlidableAction(
-                onPressed: onEdit,
-                icon: Icons.edit,
-                backgroundColor: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(5),
-              ),
-            ]
+            SlidableAction(
+              onPressed: onEdit,
+              icon: Icons.edit,
+              backgroundColor: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(5),
+            ),
           ]
         ),
         endActionPane: ActionPane(
           motion: ScrollMotion(), 
           extentRatio: 0.25,
           children: [
-            if(state == false)...[
-              SlidableAction(
-                onPressed: onDelete,
-                icon: Icons.delete,
-                backgroundColor: Colors.redAccent,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ]
+            SlidableAction(
+              onPressed: onDelete,
+              icon: Icons.delete,
+              backgroundColor: Colors.redAccent,
+              borderRadius: BorderRadius.circular(10),
+            ),
           ]
         ),
         child: Container(
@@ -75,20 +66,24 @@ class TodoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Checkbox(
-                value: state, 
-                onChanged: onChanged,
+                value: todo.completed, 
+                onChanged: onChanged == null ? null : (value) => {
+                  if(value != null) {
+                    onChanged!(value)
+                  }
+                },
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text ( 
-                      title, 
+                      todo.title, 
                       style: TextStyle(fontSize: 16) 
                     ),
                     const SizedBox(height: 2),
                     Text ( 
-                      formatDate(createdAt), 
+                      formatDate(todo.createdAt), 
                       style: TextStyle(
                         fontSize: 12, 
                         color: Colors.grey
@@ -97,12 +92,13 @@ class TodoCard extends StatelessWidget {
                   ],
                 )
               ),
+              const SizedBox(width: 2),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if(expiresAt != null)...[
+                  if(todo.expiresAt != null)...[
                     Text (
-                      'Expr date:',
+                      'Due date:',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey
@@ -110,7 +106,7 @@ class TodoCard extends StatelessWidget {
                     )
                   ],
                   Text(
-                    formatDate(expiresAt), 
+                    formatDate(todo.expiresAt), 
                     style: TextStyle(
                       fontSize: 14, 
                       color: Colors.grey

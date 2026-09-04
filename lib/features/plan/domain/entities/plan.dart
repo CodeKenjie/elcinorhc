@@ -1,33 +1,33 @@
-class Todo {
+class Plan {
   final int id;
-  final int? planId;
   final String title;
+  final String? body;
   final bool completed;
   final DateTime createdAt;
-  final DateTime? expiresAt;
+  final DateTime dueAt;
 
-  const Todo({
+  const Plan({
     required this.id,
-    required this.planId,
     required this.title,
+    required this.body,
     required this.completed,
     required this.createdAt,
-    required this.expiresAt
+    required this.dueAt
   });
 
-  Todo copyWith({
-    int? planId,
+  Plan copyWith({
     String? title,
+    String? body,
     bool? completed,
-    DateTime? expiresAt
-  }){
-    return Todo (
+    DateTime? dueAt
+  }) {
+    return Plan(
       id: id,
-      planId: planId ?? this.planId,
       title: title ?? this.title,
+      body: body ?? this.body,
       completed: completed ?? this.completed,
-      createdAt:  createdAt,
-      expiresAt: expiresAt ?? this.expiresAt
+      createdAt: createdAt,
+      dueAt: dueAt ?? this.dueAt
     );
   }
 }

@@ -13,19 +13,30 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<Todo> addTodo({
+    int? planId,
     required String title,
     DateTime? expiresAt
   }) async {
-    return await localDataSource.addTodo(title: title, expiresAt: expiresAt);
+    return await localDataSource.addTodo(
+      planId: planId,
+      title: title, 
+      expiresAt: expiresAt
+    );
   }
 
   @override
   Future<void> updateTodo({
+    int? planId,
     required int id,
     required String title,
     DateTime? expiresAt
   }) {
-    return localDataSource.updateTodo(id: id, title: title, expiresAt: expiresAt);
+    return localDataSource.updateTodo(
+      id: id, 
+      planId: planId,
+      title: title, 
+      expiresAt: expiresAt
+    );
   }
 
   @override

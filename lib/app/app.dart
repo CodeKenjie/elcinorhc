@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../features/daily/presentation/pages/daily_page.dart';
+import '../features/plan/presentation/pages/plan_page.dart';
 
 class Elcinorhc extends StatefulWidget {
   const Elcinorhc({super.key});
@@ -13,7 +14,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
 
   final List<Widget> _pages = [
     DailyPage(),
-    Center(child: Text('Planner page')),
+    PlanPage(),
     Center(child: Text('Journal page')),
     Center(child: Text('Profile page')),
   ];
@@ -36,6 +37,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
         ),
         body: _pages[_currentIndex],
         bottomNavigationBar: NavigationBar(
+          height: 50,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           selectedIndex: _currentIndex,
           onDestinationSelected: (int index) {

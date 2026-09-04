@@ -3,9 +3,10 @@ import 'package:elcinorch/features/todo/presentation/controllers/todo_controller
 import 'package:elcinorch/features/todo/domain/entities/todo.dart';
 
 class TodoDialog extends StatefulWidget {
+  final int? planId;
   final Todo? todo;
   final TodoController controller;
-  const TodoDialog({ super.key, required this.controller, this.todo, });
+  const TodoDialog({ super.key, required this.controller, this.todo, this.planId });
   bool get isEditing => todo != null;
 
   @override
@@ -44,17 +45,24 @@ class _TodoDialogState extends State<TodoDialog> {
     if(widget.isEditing) {
       success = await widget.controller.update(
         id: widget.todo!.id, 
+        planId: widget.todo!.planId,
         title: title,
         expiresAt: expirationDate
       );
+
+      if(!mounted) return;
+
+      Navigator.pop(context);
     } else {
       success = await widget.controller.create(
+        planId: widget.planId,
         title: title,
         expiresAt: expirationDate
       );
 
       if(success) {
         if(!mounted) return;
+
         Navigator.pop(context);
       } else {
         if(!mounted) return;
@@ -69,16 +77,20 @@ class _TodoDialogState extends State<TodoDialog> {
     return AnimatedBuilder(
       animation: widget.controller, 
       builder: (context, child) {
+        final screenSize = MediaQuery.of(context).size;
         return AlertDialog(
           title: Text(widget.isEditing ? 'Edit Task' : 'Create Task'),
-          content: SingleChildScrollView(
+          content: SizedBox(
+            width: screenSize.width,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: _titleController,
                   decoration: InputDecoration(
                     hintText: 'Task name',
                     border: OutlineInputBorder(),
+                    labelText: 'Task name'
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -121,7 +133,7 @@ class _TodoDialogState extends State<TodoDialog> {
               onPressed: widget.controller.isLoading ? null : () { Navigator.pop(context); }, 
               child: const Text('Cancel')
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: widget.controller.isLoading ? null : _submit, 
               child: widget.controller.isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Text(widget.isEditing ? 'Save' : 'Add')
             )

@@ -11,6 +11,7 @@ class TodoLocalDataSource {
     final todos = await localDatabase.select(localDatabase.todos).get();
     return todos.map((todo) => TodoModel(
       id: todo.id, 
+      planId: todo.id, 
       title: todo.title, 
       completed: todo.completed, 
       createdAt: todo.createdAt, 
@@ -19,11 +20,13 @@ class TodoLocalDataSource {
   }
 
   Future<TodoModel> addTodo({
+    int? planId,
     required String title,
     DateTime? expiresAt
   }) async {
     final id = await localDatabase.into(localDatabase.todos).insert(
       TodosCompanion.insert(
+        planId: Value(planId),
         title: title,
         expiresAt: Value(expiresAt),
       )
@@ -33,6 +36,7 @@ class TodoLocalDataSource {
 
     return TodoModel(
       id: todo.id, 
+      planId: todo.id, 
       title: todo.title, 
       completed: todo.completed, 
       createdAt: todo.createdAt, 
@@ -40,9 +44,10 @@ class TodoLocalDataSource {
     );
   }
 
-  Future<int> updateTodo({required int id, required String title, DateTime? expiresAt}){
+  Future<int> updateTodo({required int id, int? planId, required String title, DateTime? expiresAt}){
     return (localDatabase.update(localDatabase.todos)..where((todo) => todo.id.equals(id))).write(
       TodosCompanion(
+        planId: Value(planId),
         title: Value(title),
         expiresAt: Value(expiresAt)
       )

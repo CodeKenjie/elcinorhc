@@ -5,7 +5,7 @@ class Add {
 
   const Add(this.repository);
 
-  Future<Todo> call ({ required String title, DateTime? expiresAt }) {
-    return repository.addTodo(title: title, expiresAt: expiresAt );
+  Future<Todo> call ({ int? planId, required String title, DateTime? expiresAt }) {
+    return repository.addTodo(planId: planId, title: title, expiresAt: expiresAt );
   }
 }

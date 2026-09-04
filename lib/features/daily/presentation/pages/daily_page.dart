@@ -22,6 +22,7 @@ class _DailyPageState extends State<DailyPage> {
   Future<void> _loadTodos() async {
     await todoController.loadTodos();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,67 +32,162 @@ class _DailyPageState extends State<DailyPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Daily Tasks'
+              'ToDo Tasks:',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey
+              ),
             ),
             const SizedBox(height: 8),
             AnimatedBuilder(
               animation: todoController, 
               builder: (context, child) {
-                final todos = todoController.todos;
+                final todos = todoController.todos.where((todo) => !todo.completed && (todo.expiresAt == null || todo.expiresAt!.isAfter(DateTime.now()))).toList();
+
+                if(todoController.isLoading && todoController.todos.isEmpty){
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(30),
+                      child: CircularProgressIndicator()
+                    ),
+                  );
+                }
+
                 if(todos.isEmpty) {
                   return Container(
-                    padding: const EdgeInsets.all(10),
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border(bottom: BorderSide(color: Colors.black))
                     ),
-                    child: Text(
-                      'No task for today', 
-                      style: TextStyle(
-                        fontSize: 20, 
-                        fontWeight: 
-                        FontWeight.bold, 
-                        color: Colors.grey
-                      )
+                    child: Column (
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'No available task', 
+                          style: TextStyle(
+                            fontSize: 20, 
+                            fontWeight: 
+                            FontWeight.bold, 
+                            color: Colors.grey
+                          )
+                        )
+                      ]
                     )
                   );
                 }
-
-                return Expanded (
+                return Expanded(
                   child: ListView.builder(
                     itemCount: todos.length,
                     itemBuilder: (context, index) {
                       final todo = todos[index];
                       return TodoCard(
-                        title: todo.title, 
-                        state: todo.completed, 
-                        createdAt: todo.createdAt, 
-                        expiresAt: todo.expiresAt,
-                        onChanged: (value) {
-                          todoController.updateStatus(
-                            id: todo.id, 
-                            completed: value ?? false
-                          );
-                        },
+                        todo: todo,
+                        onChanged: (value) => todoController.updateStatus(
+                          id: todo.id, 
+                          completed: value
+                        ),
                         onEdit: (context) {
                           showDialog(
                             context: context, 
-                            builder: (context) => TodoDialog(controller: AppDependencies.todoController, todo: todo)
+                            builder: (context) => TodoDialog(
+                              todo: todo,
+                              controller: todoController
+                            )
                           );
                         },
                         onDelete: (context) {
                           todoController.delete(todo.id);
                         },
                       );
-                    },
+                    }
                   )
                 );
               }
-            )
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Completed Tasks:',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey
+              ),
+            ),
+            const SizedBox(height: 8),
+            AnimatedBuilder(
+              animation: todoController, 
+              builder: (context, child) {
+                final todos = todoController.todos.where((todo) => todo.completed).toList();
+
+                if(todoController.isLoading && todoController.todos.isEmpty){
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(30),
+                      child: CircularProgressIndicator()
+                    ),
+                  );
+                }
+
+                if(todos.isEmpty) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border(bottom: BorderSide(color: Colors.black))
+                    ),
+                    child: Column (
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'No completed task', 
+                          style: TextStyle(
+                            fontSize: 20, 
+                            fontWeight: 
+                            FontWeight.bold, 
+                            color: Colors.grey
+                          )
+                        )
+                      ]
+                    )
+                  );
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: todos.length,
+                    itemBuilder: (context, index) {
+                      final todos = todoController.todos.where((todo) => todo.completed).toList();
+                      final todo = todos[index];
+                      return TodoCard(
+                        todo: todo,
+                        onChanged: (value) => todoController.updateStatus(
+                          id: todo.id, 
+                          completed: value
+                        ),
+                        onEdit: (context) {
+                          showDialog(
+                            context: context, 
+                            builder: (context) => TodoDialog(
+                              todo: todo,
+                              controller: todoController
+                            )
+                          );
+                        },
+                        onDelete: (context) {
+                          todoController.delete(todo.id);
+                        },
+                      );
+                    }
+                  )
+                );
+              }
+            ),
           ],
         )
       ),
       floatingActionButton: FloatingActionButton(
+        elevation: 0,
         child: Icon(Icons.add),
         onPressed: () {
           showDialog(

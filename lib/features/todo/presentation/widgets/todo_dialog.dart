@@ -5,8 +5,9 @@ import 'package:elcinorch/features/todo/domain/entities/todo.dart';
 class TodoDialog extends StatefulWidget {
   final int? planId;
   final Todo? todo;
+  final DateTime? expiresAt;
   final TodoController controller;
-  const TodoDialog({ super.key, required this.controller, this.todo, this.planId });
+  const TodoDialog({ super.key, required this.controller, this.todo, this.planId, this.expiresAt });
   bool get isEditing => todo != null;
 
   @override
@@ -23,6 +24,8 @@ class _TodoDialogState extends State<TodoDialog> {
     if(widget.todo != null) {
       _titleController.text = widget.todo!.title;
       _expiresAt = widget.todo!.expiresAt;
+    } else if(widget.expiresAt != null) {
+      _expiresAt = widget.expiresAt;
     }
   }
 

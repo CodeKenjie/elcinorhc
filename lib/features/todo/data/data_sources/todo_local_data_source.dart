@@ -11,7 +11,7 @@ class TodoLocalDataSource {
     final todos = await localDatabase.select(localDatabase.todos).get();
     return todos.map((todo) => TodoModel(
       id: todo.id, 
-      planId: todo.id, 
+      planId: todo.planId, 
       title: todo.title, 
       completed: todo.completed, 
       createdAt: todo.createdAt, 
@@ -36,7 +36,7 @@ class TodoLocalDataSource {
 
     return TodoModel(
       id: todo.id, 
-      planId: todo.id, 
+      planId: todo.planId, 
       title: todo.title, 
       completed: todo.completed, 
       createdAt: todo.createdAt, 

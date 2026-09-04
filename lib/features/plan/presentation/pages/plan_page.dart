@@ -72,6 +72,7 @@ class _PlanPageState extends State<PlanPage> {
                   return Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(5),
                       border: Border(
                         bottom: BorderSide(color: Colors.black)
@@ -125,6 +126,7 @@ class _PlanPageState extends State<PlanPage> {
                             context: context, 
                             builder: (context) => TodoDialog(
                               planId: plan.id,
+                              expiresAt: selectedDate,
                               controller: todoController
                             )
                           );

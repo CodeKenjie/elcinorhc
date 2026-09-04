@@ -50,7 +50,6 @@ class TodoController extends ChangeNotifier {
       return true;
     } catch (err) {
       _errorMessage = _formattedError(err);
-      notifyListeners();
       return false;
     } finally {
       _setLoading(false);
@@ -60,11 +59,6 @@ class TodoController extends ChangeNotifier {
   Future<bool> create({ int? planId, required String title, DateTime? expiresAt }) async {
     _clearError();
     _setLoading(true);
-
-    if(title.isEmpty) {
-      _errorMessage = "Title can't be blank.";
-      return false;
-    }
 
     try {
       final todo = await addUseCase( 
@@ -86,11 +80,6 @@ class TodoController extends ChangeNotifier {
   Future<bool> update({ required int id, int? planId, required String title, DateTime? expiresAt }) async {
     _clearError();
     _setLoading(true);
-
-    if(title.isEmpty) {
-      _errorMessage = "Title can't be blank.";
-      return false;
-    }
 
     try {
       await updateUseCase( 

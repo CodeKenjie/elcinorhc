@@ -1004,7 +1004,7 @@ class $PlanTagsTable extends PlanTags with TableInfo<$PlanTagsTable, PlanTag> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES plans (id)',
+      'REFERENCES plans (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
@@ -1551,7 +1551,7 @@ class $JournalTagsTable extends JournalTags
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES journals (id)',
+      'REFERENCES journals (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
@@ -1808,6 +1808,20 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('todos', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'plans',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('plan_tags', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'journals',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('journal_tags', kind: UpdateKind.delete)],
     ),
   ]);
 }

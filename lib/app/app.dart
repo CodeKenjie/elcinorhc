@@ -1,6 +1,8 @@
+import '../features/journal/presentation/pages/journal_list_page.dart';
 import 'package:flutter/material.dart';
 import '../features/daily/presentation/pages/daily_page.dart';
 import '../features/plan/presentation/pages/plan_page.dart';
+import 'theme/theme.dart';
 
 class Elcinorhc extends StatefulWidget {
   const Elcinorhc({super.key});
@@ -15,7 +17,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
   final List<Widget> _pages = [
     DailyPage(),
     PlanPage(),
-    Center(child: Text('Journal page')),
+    JournalListPage(),
     Center(child: Text('Profile page')),
   ];
 
@@ -23,6 +25,8 @@ class _ElcinorhcState extends State<Elcinorhc> {
   Widget build(BuildContext context){
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: light,
+      darkTheme: dark,
       home: Scaffold(      
         appBar: AppBar(
           backgroundColor: Colors.transparent,

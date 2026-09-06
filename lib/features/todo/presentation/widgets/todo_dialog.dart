@@ -55,6 +55,11 @@ class _TodoDialogState extends State<TodoDialog> {
 
       if(!mounted) return;
 
+      if(!success) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.controller.errorMessage ?? 'Something went wrong!.')));
+        return;
+      }
+
       Navigator.pop(context);
     } else {
       success = await widget.controller.create(
@@ -63,15 +68,14 @@ class _TodoDialogState extends State<TodoDialog> {
         expiresAt: expirationDate
       );
 
-      if(success) {
-        if(!mounted) return;
+      if(!mounted) return;
 
-        Navigator.pop(context);
-      } else {
-        if(!mounted) return;
+      if(!success) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.controller.errorMessage ?? 'Something went wrong!.')));
         return;
       }
+
+      Navigator.pop(context);
     }
   }
 

@@ -36,8 +36,8 @@ class TodoCard extends StatelessWidget {
             SlidableAction(
               onPressed: onEdit,
               icon: Icons.edit,
-              backgroundColor: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(5),
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              borderRadius: BorderRadius.circular(10),
             ),
           ]
         ),
@@ -56,11 +56,8 @@ class TodoCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.only(right: 20, top: 10, bottom: 10),
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(5),
-            border: Border(
-              bottom: BorderSide(color: Colors.black)
-            )
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +83,7 @@ class TodoCard extends StatelessWidget {
                       formatDate(todo.createdAt), 
                       style: TextStyle(
                         fontSize: 12, 
-                        color: Colors.grey
+                        color: Theme.of(context).colorScheme.tertiary
                       ) 
                     ),
                   ],
@@ -101,7 +98,7 @@ class TodoCard extends StatelessWidget {
                       'Due date:',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey
+                        color: Theme.of(context).colorScheme.tertiary
                       ),
                     )
                   ],
@@ -109,7 +106,7 @@ class TodoCard extends StatelessWidget {
                     formatDate(todo.expiresAt), 
                     style: TextStyle(
                       fontSize: 14, 
-                      color: Colors.grey
+                      color: Theme.of(context).colorScheme.tertiary
                     ) 
                   ),
                 ],

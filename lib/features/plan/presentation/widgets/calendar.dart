@@ -122,7 +122,7 @@ class _CalendarState extends State<Calendar> {
                   day, 
                   style: TextStyle(
                     fontSize: 14, 
-                    color: Colors.grey
+                    color: Theme.of(context).colorScheme.tertiary
                   ),
                 )
               ),
@@ -169,9 +169,9 @@ class _CalendarState extends State<Calendar> {
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: isToday ? Colors.black : Colors.grey.shade100),
+                    border: Border.all(color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface),
                     borderRadius: BorderRadius.circular(10),
-                    color: isSelected ? Colors.deepPurpleAccent : isPast ? Colors.grey.shade100 : Colors.white
+                    color: isSelected ? Colors.deepPurpleAccent : isPast ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class _CalendarState extends State<Calendar> {
                       Text(
                         '${date.day}', 
                         style: TextStyle(
-                          color: isSelected ? Colors.white : isPast ? Colors.grey.shade400 : isCurrentMonth ? Colors.black : Colors.grey
+                          color: isSelected ? Colors.white : isPast ? Theme.of(context).colorScheme.surface : isCurrentMonth ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.tertiary
                         ),
                       ),
                       if(planCount > 0)...[

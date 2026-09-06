@@ -17,6 +17,15 @@ import '../features/plan/domain/usecases/update_plan.dart';
 import '../features/plan/domain/usecases/update_plan_status.dart';
 import '../features/plan/domain/usecases/delete_plan.dart';
 
+import '../features/journal/presentation/controllers/journal_controller.dart';
+import '../features/journal/data/data_sources/journal_local_data_source.dart';
+import '../features/journal/data/repositories/journal_repository_impl.dart';
+import '../features/journal/domain/usecases/create_journal.dart';
+import '../features/journal/domain/usecases/get_journals.dart';
+import '../features/journal/domain/usecases/get_journal.dart';
+import '../features/journal/domain/usecases/edit_journal.dart';
+import '../features/journal/domain/usecases/delete_journal.dart';
+
 class AppDependencies {
   static final localDatabase = LocalDatabase();
 
@@ -50,5 +59,22 @@ class AppDependencies {
     updatePlanUseCase: updatePlanUseCase, 
     updatePlanStatusUseCase: updatePlanStatusUseCase, 
     deletePlanUseCase: deletePlanUseCase
+  );
+
+
+  static final journalLocalDataSource = JournalLocalDataSource(localDatabase);
+  static final journalRepository = JournalRepositoryImpl(journalLocalDataSource);
+  static final getJournalsUseCase = GetJournals(journalRepository);
+  static final getJournalUseCase = GetJournal(journalRepository);
+  static final createJournalUseCase = CreateJournal(journalRepository);
+  static final editJournalUseCase = EditJournal(journalRepository);
+  static final deleteJournalUseCase = DeleteJournal(journalRepository);
+
+  static final journalController = JournalController(
+    getJournalUseCase: getJournalUseCase,
+    getJournalsUseCase: getJournalsUseCase,
+    createJournalUseCase: createJournalUseCase,
+    editJournalUseCase: editJournalUseCase,
+    deleteJournalUseCase: deleteJournalUseCase
   );
 }

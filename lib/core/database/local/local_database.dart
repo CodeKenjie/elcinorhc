@@ -31,7 +31,7 @@ class Plans extends Table {
 
 class PlanTags extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get planId => integer().references(Plans, #id)();
+  IntColumn get planId => integer().references(Plans, #id, onDelete: KeyAction.cascade)();
   IntColumn get tagId => integer().references(Tags, #id)();
   @override
   List<Set<Column>> get uniqueKeys => [ {planId, tagId} ];
@@ -46,7 +46,7 @@ class Journals extends Table {
 
 class JournalTags extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get journalId => integer().references(Journals, #id)();
+  IntColumn get journalId => integer().references(Journals, #id, onDelete: KeyAction.cascade)();
   IntColumn get tagId => integer().references(Tags, #id)();
   @override
   List<Set<Column>> get uniqueKeys => [ {journalId, tagId} ];
@@ -58,6 +58,13 @@ class LocalDatabase extends _$LocalDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+    }
+  );
 }
 
 LazyDatabase _openConnection(){

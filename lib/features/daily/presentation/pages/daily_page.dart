@@ -26,6 +26,7 @@ class _DailyPageState extends State<DailyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: AnimatedBuilder(
         animation: todoController,
         builder: (context, child) {
@@ -65,11 +66,11 @@ class _DailyPageState extends State<DailyPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Todays Tasks',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.tertiary
                   ),
                 ),
 
@@ -109,11 +110,11 @@ class _DailyPageState extends State<DailyPage> {
 
                       const SizedBox(height: 16),
 
-                      const Text(
+                      Text(
                         'Unplanned Tasks',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.tertiary
                         ),
                       ),
 
@@ -177,19 +178,15 @@ class _DailyPageState extends State<DailyPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        border: const Border(
-          bottom: BorderSide(
-            color: Colors.black,
-          ),
-        ),
+        color: Theme.of(context).colorScheme.secondary
       ),
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Colors.grey,
+          color: Theme.of(context).colorScheme.tertiary
         ),
       ),
     );

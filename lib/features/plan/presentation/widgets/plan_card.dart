@@ -2,24 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:elcinorch/features/plan/domain/entities/plan.dart';
+import 'package:elcinorch/features/todo/presentation/controllers/todo_controller.dart';
+import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
 
 class PlanCard extends StatelessWidget {
   final Plan plan;
+  final TodoController todoController;
   final ValueChanged<bool>? onChanged;
   final Function(BuildContext)? onEdit;
-  final Function(BuildContext)? addTodo;
+  final Function()? addTodo;
   final Function(BuildContext)? onDelete;
 
   const PlanCard({
     super.key, 
     required this.plan, 
+    required this.todoController,
     this.onChanged,
     this.onEdit,
     this.onDelete,
     this.addTodo
   });
 
-  String _formattedDate(DateTime date){
+  String _formattedDate(DateTime? date){
+    if (date == null) {
+      return '';
+    }
     return DateFormat('MMM dd, yyyy EEE').format(date).toString();
   }
 
@@ -31,16 +38,10 @@ class PlanCard extends StatelessWidget {
         extentRatio: 0.25,
         children: [
           SlidableAction(
-            onPressed: addTodo,
-            icon: Icons.add_task,
-            backgroundColor: Colors.deepPurpleAccent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          SlidableAction(
             onPressed: onEdit,
             icon: Icons.edit,
-            backgroundColor: Colors.grey.shade400,
-            borderRadius: BorderRadius.circular(10),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            borderRadius: BorderRadius.circular(20),
           ),
         ]
       ),
@@ -58,8 +59,9 @@ class PlanCard extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.all(20),
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(5)
         ),
         child: Column(
@@ -82,7 +84,7 @@ class PlanCard extends StatelessWidget {
                       _formattedDate(plan.dueAt),
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey
+                        color: Theme.of(context).colorScheme.tertiary
                       ),
                     ),
                   ],
@@ -107,8 +109,110 @@ class PlanCard extends StatelessWidget {
                   fontSize: 18,
                 ),
               )
-            ]
-          ],
+            ],
+            AnimatedBuilder(
+              animation: todoController, 
+              builder: (context, child) {
+                final planTodos = todoController.todos.where((todo) {
+                  if(todo.planId == null) return false;
+                  return todo.planId == plan.id;
+                }).toList();
+
+                if (planTodos.isEmpty) return const SizedBox.shrink();
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: planTodos.map((todo) {
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        motion: ScrollMotion(),
+                        extentRatio: 0.25,
+                        children: [
+                          SlidableAction(
+                            icon: Icons.edit,
+                            onPressed: (context){
+                              showDialog(
+                                context: context, 
+                                builder: (context) => TodoDialog(
+                                  todo: todo, 
+                                  controller: todoController, 
+                                  expiresAt: todo.expiresAt
+                                )
+                              );
+                            }
+                          ),
+                          SlidableAction(
+                            icon: Icons.remove_circle_outline_outlined,
+                            onPressed: (context){
+                              todoController.delete(todo.id);
+                            }
+                          ),
+                        ],
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: Row (
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: todo.completed, 
+                              shape: const CircleBorder(),
+                              visualDensity: VisualDensity.compact,
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              onChanged: (value){
+                                todoController.updateStatus(id: todo.id, completed: value!);
+                              }
+                            ),
+                            Expanded(
+                              child: Text(
+                                todo.title,
+                                style: TextStyle(
+                                  fontSize: 14
+                                ),
+                              )
+                            ),
+                            Text(
+                              _formattedDate(todo.expiresAt),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.tertiary
+                              ),
+                            ),
+                          ],
+                        )
+                      )
+                    );
+                  }).toList(),
+                );
+              }
+            ),
+            GestureDetector(
+              onTap: addTodo,
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row (
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.add_task, size: 14, color: Colors.white),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Add task',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary
+                      ),
+                    )
+                  ],
+                ),
+              )
+            )
+          ]
         ),
       )
     );

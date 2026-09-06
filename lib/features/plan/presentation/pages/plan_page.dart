@@ -30,10 +30,11 @@ class _PlanPageState extends State<PlanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Padding (
         padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column (
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Calendar(
               controller: planController,
@@ -47,8 +48,7 @@ class _PlanPageState extends State<PlanPage> {
               'Plans',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey
+                color:Theme.of(context).colorScheme.tertiary
               ),
             ),
             const SizedBox(height: 8),
@@ -69,31 +69,43 @@ class _PlanPageState extends State<PlanPage> {
                 }
 
                 if (plans.isEmpty) {
-                  return Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black)
-                      )
-                    ),
-                    child: Column(
+                  return Expanded(
+                    child: ListView(
                       children: [
-                        Text(
-                          'No plans for this date.',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Long press the date, or click the add "+" button to create a plan.',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  );
+                        Container(
+                          clipBehavior: Clip.hardEdge,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'No plans for this date.',
+                                style: TextStyle(
+                                  fontSize: 24, 
+                                  fontWeight: FontWeight.bold, 
+                                  color: Theme.of(context).colorScheme.tertiary
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Long press the date, or click the add "+" button to create a plan.',
+                                style: TextStyle(
+                                  fontSize: 16, 
+                                  color: Theme.of(context).colorScheme.tertiary
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ]
+                    )
+                 );
+
                 }
-                return Expanded(
+                return Expanded (
                   child: ListView.separated(
                     itemCount: plans.length,
                     separatorBuilder: (context, index) {
@@ -104,6 +116,7 @@ class _PlanPageState extends State<PlanPage> {
 
                       return PlanCard(
                         plan: plan,
+                        todoController: todoController,
                         onChanged: (value) => planController.updateStatus(
                           id: plan.id, 
                           completed: value
@@ -121,7 +134,7 @@ class _PlanPageState extends State<PlanPage> {
                         onDelete: (context) {
                           planController.delete(plan.id);
                         },
-                        addTodo: (context) {
+                        addTodo: () {
                           showDialog(
                             context: context, 
                             builder: (context) => TodoDialog(
@@ -134,7 +147,7 @@ class _PlanPageState extends State<PlanPage> {
                       );
                     })
                   )
-                ); 
+                );
               })
             )
           ],

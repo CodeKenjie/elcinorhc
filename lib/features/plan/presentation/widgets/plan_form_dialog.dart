@@ -28,7 +28,7 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
   @override
   void initState() {
     super.initState();
-    if(widget.plan != null) {
+    if(widget.isEditing) {
       _titleController.text = widget.plan!.title;
       _bodyController.text = widget.plan!.body ?? "";
     }
@@ -87,62 +87,64 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
       builder: (context, child) {
         return AlertDialog(
           title: Text( widget.isEditing ? 'Edit Plan' : 'Create Plan' ),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    hintText: 'Title',
-                    border: OutlineInputBorder(),
-                    labelText: 'Title'
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      hintText: 'Title',
+                      border: OutlineInputBorder(),
+                      labelText: 'Title'
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  maxLines: 5,
-                  controller: _bodyController,
-                  decoration: InputDecoration(
-                    hintText: 'Details',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 16),
+                  TextField(
+                    maxLines: 5,
+                    controller: _bodyController,
+                    decoration: InputDecoration(
+                      hintText: 'Details',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Due date',
-                  style: TextStyle(
-                    fontSize: 12
+                  const SizedBox(height: 16),
+                  Text(
+                    'Due date',
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
                   ),
-                ),
-                const SizedBox(height: 3),
-                ListTile(
-                  contentPadding: const EdgeInsets.only(left: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(color: Colors.grey)
-                  ),
-                  leading: const Icon(Icons.calendar_today),
-                  title: Text('${widget.dueAt.month}/${widget.dueAt.day}/${widget.dueAt.year}'),
-                  onTap: () async {
-                    final pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: widget.dueAt,
-                      firstDate: DateTime.now(), 
-                      lastDate: DateTime(3064)
-                    );
+                  const SizedBox(height: 3),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(color: Colors.grey)
+                    ),
+                    leading: const Icon(Icons.calendar_today),
+                    title: Text('${widget.dueAt.month}/${widget.dueAt.day}/${widget.dueAt.year}'),
+                    onTap: () async {
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: widget.dueAt,
+                        firstDate: DateTime.now(), 
+                        lastDate: DateTime(3064)
+                      );
 
-                    if(pickedDate != null) {
-                      setState(() {
-                        _selectedDate = pickedDate;
-                      });
-                    }
-                  },
-                )
-              ],
-            )
+                      if(pickedDate != null) {
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
+                      }
+                    },
+                  )
+                ],
+              )
+            ),
           ),
           actions: [
             TextButton(

@@ -30,6 +30,7 @@ class _PlanPageState extends State<PlanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Padding (
         padding: const EdgeInsets.all(10),
@@ -157,6 +158,13 @@ class _PlanPageState extends State<PlanPage> {
         elevation: 0,
         child: const Icon(Icons.add),
         onPressed: () {
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+
+          if(selectedDate.isBefore(today)) {
+            selectedDate = now;
+          }
+
           showDialog(
             context: context, 
             builder: (context) => PlanFormDialog(controller: planController, dueAt: selectedDate)

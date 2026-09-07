@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 ThemeData light = ThemeData(
   brightness: Brightness.light,
   colorScheme: ColorScheme.light(
-    surface: Colors.grey.shade100,
+    surface: Colors.grey.shade200,
     secondary: Colors.white70,
     primary: Colors.black,
-    tertiary: Colors.grey.shade500
+    tertiary: const Color.fromARGB(192, 158, 158, 158)
   ),
   navigationBarTheme: NavigationBarThemeData(
     indicatorColor: Colors.black87,
@@ -36,10 +36,10 @@ ThemeData light = ThemeData(
 ThemeData dark = ThemeData(
   brightness: Brightness.dark,
   colorScheme: ColorScheme.dark(
-    surface: Colors.black87,
+    surface: Colors.black,
     primary: Colors.white,
     secondary: Colors.grey.shade900,
-    tertiary: Colors.grey.shade700
+    tertiary: const Color.fromARGB(167, 136, 136, 136)
   ),
   navigationBarTheme: NavigationBarThemeData(
     indicatorColor: Colors.white,

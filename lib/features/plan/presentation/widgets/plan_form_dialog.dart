@@ -82,11 +82,15 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final isExpired = widget.plan != null ? widget.plan!.dueAt.isBefore(today) : false;
+
     return AnimatedBuilder(
       animation: widget.controller, 
       builder: (context, child) {
         return AlertDialog(
-          title: Text( widget.isEditing ? 'Edit Plan' : 'Create Plan' ),
+          title: Text( isExpired ? 'Reschedule Plan' : widget.isEditing ? 'Edit Plan' : 'Create Plan' ),
           content: SingleChildScrollView(
             child: SizedBox(
               width: MediaQuery.of(context).size.width,

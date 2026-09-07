@@ -1,3 +1,5 @@
+import 'package:elcinorch/features/tag/data/repositories/tag_repository_impl.dart';
+
 import '../core/database/local/local_database.dart';
 import '../features/todo/presentation/controllers/todo_controller.dart';
 import '../features/todo/data/data_sources/todo_local_data_source.dart';
@@ -25,6 +27,21 @@ import '../features/journal/domain/usecases/get_journals.dart';
 import '../features/journal/domain/usecases/get_journal.dart';
 import '../features/journal/domain/usecases/edit_journal.dart';
 import '../features/journal/domain/usecases/delete_journal.dart';
+
+import '../features/tag/presentation/controllers/tag_controller.dart';
+import '../features/tag/data/data_sources/tag_local_data_source.dart';
+import '../features/tag/domain/usecases/journal_tags.dart';
+import '../features/tag/domain/usecases/get_tags.dart';
+import '../features/tag/domain/usecases/get_tag.dart';
+import '../features/tag/domain/usecases/create_tag.dart';
+import '../features/tag/domain/usecases/delete_tag.dart';
+
+import '../features/journal/presentation/controllers/journal_tag_controller.dart';
+import '../features/journal/data/data_sources/journal_tag_local_data_source.dart';
+import '../features/journal/data/repositories/journal_tag_repository_impl.dart';
+import '../features/journal/domain/usecases/create_journal_tag.dart';
+import '../features/journal/domain/usecases/get_all_journal_tags.dart';
+import '../features/journal/domain/usecases/delete_journal_tag.dart';
 
 class AppDependencies {
   static final localDatabase = LocalDatabase();
@@ -76,5 +93,33 @@ class AppDependencies {
     createJournalUseCase: createJournalUseCase,
     editJournalUseCase: editJournalUseCase,
     deleteJournalUseCase: deleteJournalUseCase
+  );
+
+  static final tagLocalDataSource = TagLocalDataSource(localDatabase);
+  static final tagRepository = TagRepositoryImpl(tagLocalDataSource);
+  static final getTagsUseCase = GetTags(tagRepository);
+  static final getJournalTagsUseCase = GetJournalTags(tagRepository);
+  static final getTagUseCase = GetTag(tagRepository);
+  static final createTagUseCase = CreateTag(tagRepository);
+  static final deleteTagUseCase = DeleteTag(tagRepository);
+
+  static final tagController = TagController(
+    getTagsUseCase: getTagsUseCase,
+    getJournalTagsUseCase: getJournalTagsUseCase,
+    getTagUseCase: getTagUseCase,
+    createTagUseCase: createTagUseCase,
+    deleteTagUseCase: deleteTagUseCase
+  );
+
+  static final journalTagLocalDataSource = JournalTagLocalDataSource(localDatabase);
+  static final journalTagRepository = JournalTagRepositoryImpl(journalTagLocalDataSource);
+  static final getAllJournalTagsUseCase = GetAllJournalTags(journalTagRepository);
+  static final createJournalTagUseCase = CreateJournalTag(journalTagRepository);
+  static final deleteJournalTagUseCase = DeleteJournalTag(journalTagRepository);
+
+  static final journalTagController = JournalTagController(
+    getJournalTagsUseCase: getAllJournalTagsUseCase,
+    createJournalTagUseCase: createJournalTagUseCase,
+    deleteJournalTagUseCase: deleteJournalTagUseCase
   );
 }

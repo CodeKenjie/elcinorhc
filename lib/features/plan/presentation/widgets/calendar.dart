@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controller/plan_controller.dart';
 import 'plan_form_dialog.dart';
+import 'dart:math';
 
 class Calendar extends StatefulWidget{
   final PlanController controller;
@@ -153,7 +154,7 @@ class _CalendarState extends State<Calendar> {
               final isPast = _isPastDate(date);
 
               return GestureDetector(
-                onTap: isPast ? null : (){
+                onTap: (){
                   setState(() {
                     selectedDate = date;
                   });
@@ -167,11 +168,12 @@ class _CalendarState extends State<Calendar> {
                   );
                 },
                 child: Container(
+                  clipBehavior: Clip.hardEdge,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface),
                     borderRadius: BorderRadius.circular(10),
-                    color: isSelected ? Colors.deepPurpleAccent : isPast ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary
+                    color: isSelected ? Colors.grey.shade600 : isPast ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +187,7 @@ class _CalendarState extends State<Calendar> {
                       if(planCount > 0)...[
                         Column(
                           children: List.generate(
-                            _planCountForDate(date), 
+                            min(_planCountForDate(date), 5), 
                             (index) {
                               return Container(
                                 width: double.infinity,

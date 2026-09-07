@@ -12,6 +12,8 @@ class JournalListPage extends StatefulWidget {
 
 class _JournalListPageState extends State<JournalListPage> {
   final journalController = AppDependencies.journalController;
+  final journalTagController = AppDependencies.journalTagController;
+  final tagController = AppDependencies.tagController;
 
   @override
   void initState(){
@@ -44,12 +46,17 @@ class _JournalListPageState extends State<JournalListPage> {
                 animation: journalController,
                 builder: (context, child) {
                   final journals = journalController.journals.toList();
-                  return ListView.builder(
+                  return ListView.separated(
                     itemCount: journals.length,
+                    separatorBuilder: ((context, index) {
+                      return const SizedBox(height: 10);
+                    }),
                     itemBuilder: (context, index) {
                       final journal = journals[index];
                       return JournalCard(
                         journal: journal,
+                        journalTagController: journalTagController,
+                        tagController: tagController,
                         onDelete: (context) async {
                           await journalController.delete(journal.id);
                         },

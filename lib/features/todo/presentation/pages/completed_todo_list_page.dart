@@ -3,20 +3,25 @@ import 'package:elcinorch/app/dependencies.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_card.dart';
 
-class DailyPage extends StatefulWidget {
-  const DailyPage({super.key});
+class CompletedTodoListPage extends StatefulWidget {
+  const CompletedTodoListPage({super.key});
 
   @override
-  State<DailyPage> createState() => _DailyPageState();
+  State<CompletedTodoListPage> createState() => _CompletedTodoListPageState();
 }
 
-class _DailyPageState extends State<DailyPage> {
+class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
   final todoController = AppDependencies.todoController;
 
   @override
   void initState() {
     super.initState();
     _loadTodos();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _loadTodos() async {
@@ -26,7 +31,21 @@ class _DailyPageState extends State<DailyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Row (
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(Icons.task_alt),
+            const SizedBox(width: 8),
+            Text(
+              'Completed task',
+              style: TextStyle(
+                fontSize: 20
+              )
+            )
+          ],
+        )
+      ),
       body: AnimatedBuilder(
         animation: todoController,
         builder: (context, child) {
@@ -44,22 +63,8 @@ class _DailyPageState extends State<DailyPage> {
             now.day,
           );
 
-          final endOfDay = startOfDay.add(
-            const Duration(days: 1),
-          );
-
-          final todaysTodos = todoController.todos.where((todo) {
-            if (todo.completed) return false;
-            if (todo.expiresAt == null) return false;
-            if (todo.planId == null) return false;
-
-            return !todo.expiresAt!.isBefore(startOfDay) &&
-                todo.expiresAt!.isBefore(endOfDay);
-          }).toList();
-
-          final unplannedTodos = todoController.todos.where((todo) {
-            return !todo.completed && todo.planId == null;
-          }).toList();
+          final completedTodos = todoController.todos.where((todo) => todo.completed).toList();
+          final undoneExpiredTodos = todoController.todos.where((todo) => !todo.completed && todo.expiresAt != null && todo.expiresAt!.isBefore(startOfDay)).toList();
 
           return Padding(
             padding: const EdgeInsets.all(20),
@@ -67,7 +72,7 @@ class _DailyPageState extends State<DailyPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Todays Tasks',
+                  'Completed Tasks',
                   style: TextStyle(
                     fontSize: 14,
                     color: Theme.of(context).colorScheme.tertiary
@@ -79,12 +84,12 @@ class _DailyPageState extends State<DailyPage> {
                 Expanded(
                   child: ListView(
                     children: [
-                      if (todaysTodos.isEmpty)
+                      if (completedTodos.isEmpty)
                         _buildEmptyState(
                           'No available task',
                         )
                       else
-                        ...todaysTodos.map(
+                        ...completedTodos.map(
                           (todo) => TodoCard(
                             todo: todo,
                             onChanged: (value) {
@@ -108,10 +113,8 @@ class _DailyPageState extends State<DailyPage> {
                           ),
                         ),
 
-                      const SizedBox(height: 16),
-
                       Text(
-                        'Unplanned Tasks',
+                        'Forgotten Tasks',
                         style: TextStyle(
                           fontSize: 14,
                           color: Theme.of(context).colorScheme.tertiary
@@ -119,13 +122,12 @@ class _DailyPageState extends State<DailyPage> {
                       ),
 
                       const SizedBox(height: 8),
-
-                      if (unplannedTodos.isEmpty)
+                      if (undoneExpiredTodos.isEmpty)
                         _buildEmptyState(
                           'No unplanned task',
                         )
                       else
-                        ...unplannedTodos.map(
+                        ...undoneExpiredTodos.map(
                           (todo) => TodoCard(
                             todo: todo,
                             onChanged: (value) {
@@ -152,19 +154,6 @@ class _DailyPageState extends State<DailyPage> {
                   ),
                 ),
               ],
-            ),
-          );
-        },
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        elevation: 0,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => TodoDialog(
-              controller: todoController,
             ),
           );
         },

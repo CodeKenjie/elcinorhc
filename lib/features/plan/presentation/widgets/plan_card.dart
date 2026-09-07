@@ -32,6 +32,9 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     return Slidable(
       startActionPane: plan.completed ? null : ActionPane(
         motion: ScrollMotion(), 
@@ -81,7 +84,7 @@ class PlanCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _formattedDate(plan.dueAt),
+                      plan.dueAt.isBefore(today) ? 'Expired plan' : _formattedDate(plan.dueAt),
                       style: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context).colorScheme.tertiary
@@ -102,13 +105,14 @@ class PlanCard extends StatelessWidget {
               ],
             ),
             if(plan.body != '')... [
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Text(
                 plan.body ?? '',
                 style: TextStyle(
                   fontSize: 18,
                 ),
-              )
+              ),
+              const SizedBox(height: 10),
             ],
             AnimatedBuilder(
               animation: todoController, 
@@ -173,13 +177,15 @@ class PlanCard extends StatelessWidget {
                                 ),
                               )
                             ),
-                            Text(
-                              _formattedDate(todo.expiresAt),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.tertiary
+                            if(todo.expiresAt!.isBefore(today))... [
+                              Text(
+                                'Expired Task',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.tertiary
+                                ),
                               ),
-                            ),
+                            ]
                           ],
                         )
                       )

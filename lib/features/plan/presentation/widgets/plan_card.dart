@@ -194,30 +194,33 @@ class PlanCard extends StatelessWidget {
                 );
               }
             ),
-            GestureDetector(
-              onTap: addTodo,
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Row (
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add_task, size: 14, color: Colors.white),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Add task',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.primary
-                      ),
-                    )
-                  ],
-                ),
+            const SizedBox(height: 8),
+            if(!plan.dueAt.isBefore(today))... [
+              GestureDetector(
+                onTap: addTodo,
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Row (
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_task, size: 14, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Add task',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary
+                        ),
+                      )
+                    ],
+                  ),
+                )
               )
-            )
+            ]
           ]
         ),
       )

@@ -105,7 +105,7 @@ class _TodoDialogState extends State<TodoDialog> {
                   contentPadding: const EdgeInsets.only(left: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
-                    side: const BorderSide(color: Colors.grey)
+                    side: const BorderSide(color: Colors.black)
                   ),
                   leading: const Icon(Icons.calendar_today),
                   title: Text( _expiresAt == null ? 'Expiration Date' : '${_expiresAt!.month}/${_expiresAt!.day}/${_expiresAt!.year}'),

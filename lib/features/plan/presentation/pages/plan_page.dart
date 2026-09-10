@@ -34,125 +34,129 @@ class _PlanPageState extends State<PlanPage> {
       backgroundColor: Colors.transparent,
       body: Padding (
         padding: const EdgeInsets.all(10),
-        child: Column (
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Calendar(
-              controller: planController,
-              onDateSelected: (date) {
-                setState(() {
-                  selectedDate = date;
-                });
-              },
-            ),
-            Text (
-              'Plans',
-              style: TextStyle(
-                fontSize: 14,
-                color:Theme.of(context).colorScheme.tertiary
+          child: ListView (
+            children: [
+              Calendar(
+                controller: planController,
+                onDateSelected: (date) {
+                  setState(() {
+                    selectedDate = date;
+                  });
+                },
               ),
-            ),
-            const SizedBox(height: 8),
-            AnimatedBuilder(
-              animation: planController, 
-              builder: ((context, child) {
-                final plans = planController.plans.where((plan) {
-                  return plan.dueAt.year == selectedDate.year && plan.dueAt.month == selectedDate.month && plan.dueAt.day == selectedDate.day;
-                }).toList();
+              Text (
+                'Plans',
+                style: TextStyle(
+                  fontSize: 14,
+                  color:Theme.of(context).colorScheme.tertiary
+                ),
+              ),
+              const SizedBox(height: 8),
+              AnimatedBuilder(
+                animation: planController, 
+                builder: ((context, child) {
+                  final plans = planController.plans.where((plan) {
+                    return plan.dueAt.year == selectedDate.year && plan.dueAt.month == selectedDate.month && plan.dueAt.day == selectedDate.day;
+                  }).toList();
 
-                if (planController.isLoading && plans.isEmpty) {
-                  return Center (
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: CircularProgressIndicator()
+                  if (planController.isLoading && plans.isEmpty) {
+                    return Center (
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: CircularProgressIndicator()
+                      )
+                    );
+                  }
+
+                  if (plans.isEmpty) {
+                    return Container(
+                      padding: const EdgeInsets.all(0),
+                      child: ListView(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'No plans for this date.',
+                                  style: TextStyle(
+                                    fontSize: 24, 
+                                    fontWeight: FontWeight.bold, 
+                                    color: Theme.of(context).colorScheme.tertiary
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Long press the date, or click the add "+" button to create a plan.',
+                                  style: TextStyle(
+                                    fontSize: 16, 
+                                    color: Theme.of(context).colorScheme.tertiary
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ]
+                      )
+                    );
+                  }
+                  return Container(
+                    padding: const EdgeInsets.all(0),
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: plans.length,
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: 5);
+                      },
+                      itemBuilder: ((context, index) {
+                        final plan = plans[index];
+
+                        return PlanCard(
+                          plan: plan,
+                          todoController: todoController,
+                          onChanged: (value) => planController.updateStatus(
+                            id: plan.id, 
+                            completed: value
+                          ),
+                          onEdit: (context) {
+                            showDialog(
+                              context: context, 
+                              builder: (context) => PlanFormDialog(
+                                plan: plan,
+                                controller: planController, 
+                                dueAt: plan.dueAt
+                              )
+                            );
+                          },
+                          onDelete: (context) {
+                            planController.delete(plan.id);
+                          },
+                          addTodo: () {
+                            showDialog(
+                              context: context, 
+                              builder: (context) => TodoDialog(
+                                planId: plan.id,
+                                expiresAt: selectedDate,
+                                controller: todoController
+                              )
+                            );
+                          }
+                        );
+                      })
                     )
                   );
-                }
-
-                if (plans.isEmpty) {
-                  return Expanded(
-                    child: ListView(
-                      children: [
-                        Container(
-                          clipBehavior: Clip.hardEdge,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'No plans for this date.',
-                                style: TextStyle(
-                                  fontSize: 24, 
-                                  fontWeight: FontWeight.bold, 
-                                  color: Theme.of(context).colorScheme.tertiary
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Long press the date, or click the add "+" button to create a plan.',
-                                style: TextStyle(
-                                  fontSize: 16, 
-                                  color: Theme.of(context).colorScheme.tertiary
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ]
-                    )
-                 );
-
-                }
-                return Expanded (
-                  child: ListView.separated(
-                    itemCount: plans.length,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: 5);
-                    },
-                    itemBuilder: ((context, index) {
-                      final plan = plans[index];
-
-                      return PlanCard(
-                        plan: plan,
-                        todoController: todoController,
-                        onChanged: (value) => planController.updateStatus(
-                          id: plan.id, 
-                          completed: value
-                        ),
-                        onEdit: (context) {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => PlanFormDialog(
-                              plan: plan,
-                              controller: planController, 
-                              dueAt: plan.dueAt
-                            )
-                          );
-                        },
-                        onDelete: (context) {
-                          planController.delete(plan.id);
-                        },
-                        addTodo: () {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => TodoDialog(
-                              planId: plan.id,
-                              expiresAt: selectedDate,
-                              controller: todoController
-                            )
-                          );
-                        }
-                      );
-                    })
-                  )
-                );
-              })
-            )
-          ],
-        )
+                })
+              )
+            ],
+          )
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 0,

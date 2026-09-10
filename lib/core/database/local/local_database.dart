@@ -29,14 +29,6 @@ class Plans extends Table {
   DateTimeColumn get dueAt => dateTime()();
 }
 
-class PlanTags extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get planId => integer().references(Plans, #id, onDelete: KeyAction.cascade)();
-  IntColumn get tagId => integer().references(Tags, #id)();
-  @override
-  List<Set<Column>> get uniqueKeys => [ {planId, tagId} ];
-}
-
 class Journals extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
@@ -52,7 +44,7 @@ class JournalTags extends Table {
   List<Set<Column>> get uniqueKeys => [ {journalId, tagId} ];
 }
 
-@DriftDatabase(tables: [Todos, Tags, Plans, PlanTags, Journals, JournalTags])
+@DriftDatabase(tables: [Todos, Tags, Plans, Journals, JournalTags])
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 

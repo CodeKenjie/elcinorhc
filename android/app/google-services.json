@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280178606031",
+    "project_id": "elcinorhc-cd657",
+    "storage_bucket": "elcinorhc-cd657.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280178606031:android:ebc2730aa18cb3dcb41cba",
+        "android_client_info": {
+          "package_name": "com.example.elcinorch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUPmoNxGY0JsVbETyHGXcsvicWkVgLGh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -89,6 +89,7 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
     return AnimatedBuilder(
       animation: widget.controller, 
       builder: (context, child) {
+        final displayDate = _selectedDate ?? widget.dueAt;
         return AlertDialog(
           title: Text( isExpired ? 'Reschedule Plan' : widget.isEditing ? 'Edit Plan' : 'Create Plan' ),
           content: SingleChildScrollView(
@@ -127,14 +128,14 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
                     contentPadding: const EdgeInsets.only(left: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
-                      side: BorderSide(color: Colors.grey)
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary)
                     ),
                     leading: const Icon(Icons.calendar_today),
-                    title: Text('${widget.dueAt.month}/${widget.dueAt.day}/${widget.dueAt.year}'),
+                    title: Text('${displayDate.month}/${displayDate.day}/${displayDate.year}'),
                     onTap: () async {
                       final pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: widget.dueAt,
+                        initialDate: _selectedDate ?? widget.dueAt,
                         firstDate: DateTime.now(), 
                         lastDate: DateTime(3064)
                       );

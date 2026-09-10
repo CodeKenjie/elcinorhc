@@ -6,7 +6,7 @@ ThemeData light = ThemeData(
     surface: Colors.grey.shade200,
     secondary: Colors.white70,
     primary: Colors.black,
-    tertiary: const Color.fromARGB(192, 158, 158, 158)
+    tertiary: Colors.grey.shade900
   ),
   navigationBarTheme: NavigationBarThemeData(
     indicatorColor: Colors.black87,

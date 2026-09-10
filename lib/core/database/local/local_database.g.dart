@@ -977,257 +977,6 @@ class TagsCompanion extends UpdateCompanion<Tag> {
   }
 }
 
-class $PlanTagsTable extends PlanTags with TableInfo<$PlanTagsTable, PlanTag> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $PlanTagsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _planIdMeta = const VerificationMeta('planId');
-  @override
-  late final GeneratedColumn<int> planId = GeneratedColumn<int>(
-    'plan_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES plans (id) ON DELETE CASCADE',
-    ),
-  );
-  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
-  @override
-  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
-    'tag_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tags (id)',
-    ),
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, planId, tagId];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'plan_tags';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<PlanTag> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('plan_id')) {
-      context.handle(
-        _planIdMeta,
-        planId.isAcceptableOrUnknown(data['plan_id']!, _planIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_planIdMeta);
-    }
-    if (data.containsKey('tag_id')) {
-      context.handle(
-        _tagIdMeta,
-        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_tagIdMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  List<Set<GeneratedColumn>> get uniqueKeys => [
-    {planId, tagId},
-  ];
-  @override
-  PlanTag map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlanTag(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      planId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}plan_id'],
-      )!,
-      tagId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}tag_id'],
-      )!,
-    );
-  }
-
-  @override
-  $PlanTagsTable createAlias(String alias) {
-    return $PlanTagsTable(attachedDatabase, alias);
-  }
-}
-
-class PlanTag extends DataClass implements Insertable<PlanTag> {
-  final int id;
-  final int planId;
-  final int tagId;
-  const PlanTag({required this.id, required this.planId, required this.tagId});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['plan_id'] = Variable<int>(planId);
-    map['tag_id'] = Variable<int>(tagId);
-    return map;
-  }
-
-  PlanTagsCompanion toCompanion(bool nullToAbsent) {
-    return PlanTagsCompanion(
-      id: Value(id),
-      planId: Value(planId),
-      tagId: Value(tagId),
-    );
-  }
-
-  factory PlanTag.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlanTag(
-      id: serializer.fromJson<int>(json['id']),
-      planId: serializer.fromJson<int>(json['planId']),
-      tagId: serializer.fromJson<int>(json['tagId']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'planId': serializer.toJson<int>(planId),
-      'tagId': serializer.toJson<int>(tagId),
-    };
-  }
-
-  PlanTag copyWith({int? id, int? planId, int? tagId}) => PlanTag(
-    id: id ?? this.id,
-    planId: planId ?? this.planId,
-    tagId: tagId ?? this.tagId,
-  );
-  PlanTag copyWithCompanion(PlanTagsCompanion data) {
-    return PlanTag(
-      id: data.id.present ? data.id.value : this.id,
-      planId: data.planId.present ? data.planId.value : this.planId,
-      tagId: data.tagId.present ? data.tagId.value : this.tagId,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlanTag(')
-          ..write('id: $id, ')
-          ..write('planId: $planId, ')
-          ..write('tagId: $tagId')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, planId, tagId);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlanTag &&
-          other.id == this.id &&
-          other.planId == this.planId &&
-          other.tagId == this.tagId);
-}
-
-class PlanTagsCompanion extends UpdateCompanion<PlanTag> {
-  final Value<int> id;
-  final Value<int> planId;
-  final Value<int> tagId;
-  const PlanTagsCompanion({
-    this.id = const Value.absent(),
-    this.planId = const Value.absent(),
-    this.tagId = const Value.absent(),
-  });
-  PlanTagsCompanion.insert({
-    this.id = const Value.absent(),
-    required int planId,
-    required int tagId,
-  }) : planId = Value(planId),
-       tagId = Value(tagId);
-  static Insertable<PlanTag> custom({
-    Expression<int>? id,
-    Expression<int>? planId,
-    Expression<int>? tagId,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (planId != null) 'plan_id': planId,
-      if (tagId != null) 'tag_id': tagId,
-    });
-  }
-
-  PlanTagsCompanion copyWith({
-    Value<int>? id,
-    Value<int>? planId,
-    Value<int>? tagId,
-  }) {
-    return PlanTagsCompanion(
-      id: id ?? this.id,
-      planId: planId ?? this.planId,
-      tagId: tagId ?? this.tagId,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (planId.present) {
-      map['plan_id'] = Variable<int>(planId.value);
-    }
-    if (tagId.present) {
-      map['tag_id'] = Variable<int>(tagId.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlanTagsCompanion(')
-          ..write('id: $id, ')
-          ..write('planId: $planId, ')
-          ..write('tagId: $tagId')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $JournalsTable extends Journals with TableInfo<$JournalsTable, Journal> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1785,7 +1534,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   late final $PlansTable plans = $PlansTable(this);
   late final $TodosTable todos = $TodosTable(this);
   late final $TagsTable tags = $TagsTable(this);
-  late final $PlanTagsTable planTags = $PlanTagsTable(this);
   late final $JournalsTable journals = $JournalsTable(this);
   late final $JournalTagsTable journalTags = $JournalTagsTable(this);
   @override
@@ -1796,7 +1544,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
     plans,
     todos,
     tags,
-    planTags,
     journals,
     journalTags,
   ];
@@ -1808,13 +1555,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('todos', kind: UpdateKind.delete)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'plans',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('plan_tags', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -1861,25 +1601,6 @@ final class $$PlansTableReferences
     ).filter((f) => f.planId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_todosRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$PlanTagsTable, List<PlanTag>> _planTagsRefsTable(
-    _$LocalDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.planTags,
-    aliasName: 'plans__id__plan_tags__plan_id',
-  );
-
-  $$PlanTagsTableProcessedTableManager get planTagsRefs {
-    final manager = $$PlanTagsTableTableManager(
-      $_db,
-      $_db.planTags,
-    ).filter((f) => f.planId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_planTagsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -1941,31 +1662,6 @@ class $$PlansTableFilterComposer
           }) => $$TodosTableFilterComposer(
             $db: $db,
             $table: $db.todos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> planTagsRefs(
-    Expression<bool> Function($$PlanTagsTableFilterComposer f) f,
-  ) {
-    final $$PlanTagsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.planTags,
-      getReferencedColumn: (t) => t.planId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlanTagsTableFilterComposer(
-            $db: $db,
-            $table: $db.planTags,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2067,31 +1763,6 @@ class $$PlansTableAnnotationComposer
     );
     return f(composer);
   }
-
-  Expression<T> planTagsRefs<T extends Object>(
-    Expression<T> Function($$PlanTagsTableAnnotationComposer a) f,
-  ) {
-    final $$PlanTagsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.planTags,
-      getReferencedColumn: (t) => t.planId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlanTagsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.planTags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$PlansTableTableManager
@@ -2107,7 +1778,7 @@ class $$PlansTableTableManager
           $$PlansTableUpdateCompanionBuilder,
           (Plan, $$PlansTableReferences),
           Plan,
-          PrefetchHooks Function({bool todosRefs, bool planTagsRefs})
+          PrefetchHooks Function({bool todosRefs})
         > {
   $$PlansTableTableManager(_$LocalDatabase db, $PlansTable table)
     : super(
@@ -2160,13 +1831,10 @@ class $$PlansTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({todosRefs = false, planTagsRefs = false}) {
+          prefetchHooksCallback: ({todosRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [
-                if (todosRefs) db.todos,
-                if (planTagsRefs) db.planTags,
-              ],
+              explicitlyWatchedTables: [if (todosRefs) db.todos],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -2178,17 +1846,6 @@ class $$PlansTableTableManager
                       ),
                       managerFromTypedResult: (p0) =>
                           $$PlansTableReferences(db, table, p0).todosRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.planId == item.id),
-                      typedResults: items,
-                    ),
-                  if (planTagsRefs)
-                    await $_getPrefetchedData<Plan, $PlansTable, PlanTag>(
-                      currentTable: table,
-                      referencedTable: $$PlansTableReferences
-                          ._planTagsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$PlansTableReferences(db, table, p0).planTagsRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
                           referencedItems.where((e) => e.planId == item.id),
                       typedResults: items,
@@ -2213,7 +1870,7 @@ typedef $$PlansTableProcessedTableManager =
       $$PlansTableUpdateCompanionBuilder,
       (Plan, $$PlansTableReferences),
       Plan,
-      PrefetchHooks Function({bool todosRefs, bool planTagsRefs})
+      PrefetchHooks Function({bool todosRefs})
     >;
 typedef $$TodosTableCreateCompanionBuilder = TodosCompanion Function({
   Value<int> id,
@@ -2555,25 +2212,6 @@ final class $$TagsTableReferences
     extends BaseReferences<_$LocalDatabase, $TagsTable, Tag> {
   $$TagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$PlanTagsTable, List<PlanTag>> _planTagsRefsTable(
-    _$LocalDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.planTags,
-    aliasName: 'tags__id__plan_tags__tag_id',
-  );
-
-  $$PlanTagsTableProcessedTableManager get planTagsRefs {
-    final manager = $$PlanTagsTableTableManager(
-      $_db,
-      $_db.planTags,
-    ).filter((f) => f.tagId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_planTagsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<$JournalTagsTable, List<JournalTag>>
   _journalTagsRefsTable(_$LocalDatabase db) => MultiTypedResultKey.fromTable(
     db.journalTags,
@@ -2610,31 +2248,6 @@ class $$TagsTableFilterComposer extends Composer<_$LocalDatabase, $TagsTable> {
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
-
-  Expression<bool> planTagsRefs(
-    Expression<bool> Function($$PlanTagsTableFilterComposer f) f,
-  ) {
-    final $$PlanTagsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.planTags,
-      getReferencedColumn: (t) => t.tagId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlanTagsTableFilterComposer(
-            $db: $db,
-            $table: $db.planTags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 
   Expression<bool> journalTagsRefs(
     Expression<bool> Function($$JournalTagsTableFilterComposer f) f,
@@ -2697,31 +2310,6 @@ class $$TagsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  Expression<T> planTagsRefs<T extends Object>(
-    Expression<T> Function($$PlanTagsTableAnnotationComposer a) f,
-  ) {
-    final $$PlanTagsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.planTags,
-      getReferencedColumn: (t) => t.tagId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlanTagsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.planTags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<T> journalTagsRefs<T extends Object>(
     Expression<T> Function($$JournalTagsTableAnnotationComposer a) f,
   ) {
@@ -2761,7 +2349,7 @@ class $$TagsTableTableManager
           $$TagsTableUpdateCompanionBuilder,
           (Tag, $$TagsTableReferences),
           Tag,
-          PrefetchHooks Function({bool planTagsRefs, bool journalTagsRefs})
+          PrefetchHooks Function({bool journalTagsRefs})
         > {
   $$TagsTableTableManager(_$LocalDatabase db, $TagsTable table)
     : super(
@@ -2790,50 +2378,28 @@ class $$TagsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback:
-              ({planTagsRefs = false, journalTagsRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (planTagsRefs) db.planTags,
-                    if (journalTagsRefs) db.journalTags,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (planTagsRefs)
-                        await $_getPrefetchedData<Tag, $TagsTable, PlanTag>(
-                          currentTable: table,
-                          referencedTable: $$TagsTableReferences
-                              ._planTagsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$TagsTableReferences(db, table, p0).planTagsRefs,
-                          referencedItemsForCurrentItem: (
-                            item,
-                            referencedItems,
-                          ) => referencedItems.where((e) => e.tagId == item.id),
-                          typedResults: items,
-                        ),
-                      if (journalTagsRefs)
-                        await $_getPrefetchedData<Tag, $TagsTable, JournalTag>(
-                          currentTable: table,
-                          referencedTable: $$TagsTableReferences
-                              ._journalTagsRefsTable(db),
-                          managerFromTypedResult: (p0) => $$TagsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).journalTagsRefs,
-                          referencedItemsForCurrentItem: (
-                            item,
-                            referencedItems,
-                          ) => referencedItems.where((e) => e.tagId == item.id),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
+          prefetchHooksCallback: ({journalTagsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (journalTagsRefs) db.journalTags],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (journalTagsRefs)
+                    await $_getPrefetchedData<Tag, $TagsTable, JournalTag>(
+                      currentTable: table,
+                      referencedTable: $$TagsTableReferences
+                          ._journalTagsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$TagsTableReferences(db, table, p0).journalTagsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.tagId == item.id),
+                      typedResults: items,
+                    ),
+                ];
               },
+            );
+          },
         ),
       );
 }
@@ -2850,352 +2416,7 @@ typedef $$TagsTableProcessedTableManager =
       $$TagsTableUpdateCompanionBuilder,
       (Tag, $$TagsTableReferences),
       Tag,
-      PrefetchHooks Function({bool planTagsRefs, bool journalTagsRefs})
-    >;
-typedef $$PlanTagsTableCreateCompanionBuilder = PlanTagsCompanion Function({
-  Value<int> id,
-  required int planId,
-  required int tagId,
-});
-typedef $$PlanTagsTableUpdateCompanionBuilder = PlanTagsCompanion Function({
-  Value<int> id,
-  Value<int> planId,
-  Value<int> tagId,
-});
-
-final class $$PlanTagsTableReferences
-    extends BaseReferences<_$LocalDatabase, $PlanTagsTable, PlanTag> {
-  $$PlanTagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $PlansTable _planIdTable(_$LocalDatabase db) =>
-      db.plans.createAlias('plan_tags__plan_id__plans__id');
-
-  $$PlansTableProcessedTableManager get planId {
-    final $_column = $_itemColumn<int>('plan_id')!;
-
-    final manager = $$PlansTableTableManager(
-      $_db,
-      $_db.plans,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_planIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $TagsTable _tagIdTable(_$LocalDatabase db) =>
-      db.tags.createAlias('plan_tags__tag_id__tags__id');
-
-  $$TagsTableProcessedTableManager get tagId {
-    final $_column = $_itemColumn<int>('tag_id')!;
-
-    final manager = $$TagsTableTableManager(
-      $_db,
-      $_db.tags,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_tagIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$PlanTagsTableFilterComposer
-    extends Composer<_$LocalDatabase, $PlanTagsTable> {
-  $$PlanTagsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$PlansTableFilterComposer get planId {
-    final $$PlansTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.planId,
-      referencedTable: $db.plans,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlansTableFilterComposer(
-            $db: $db,
-            $table: $db.plans,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TagsTableFilterComposer get tagId {
-    final $$TagsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.tagId,
-      referencedTable: $db.tags,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TagsTableFilterComposer(
-            $db: $db,
-            $table: $db.tags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$PlanTagsTableOrderingComposer
-    extends Composer<_$LocalDatabase, $PlanTagsTable> {
-  $$PlanTagsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$PlansTableOrderingComposer get planId {
-    final $$PlansTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.planId,
-      referencedTable: $db.plans,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlansTableOrderingComposer(
-            $db: $db,
-            $table: $db.plans,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TagsTableOrderingComposer get tagId {
-    final $$TagsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.tagId,
-      referencedTable: $db.tags,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TagsTableOrderingComposer(
-            $db: $db,
-            $table: $db.tags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$PlanTagsTableAnnotationComposer
-    extends Composer<_$LocalDatabase, $PlanTagsTable> {
-  $$PlanTagsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  $$PlansTableAnnotationComposer get planId {
-    final $$PlansTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.planId,
-      referencedTable: $db.plans,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlansTableAnnotationComposer(
-            $db: $db,
-            $table: $db.plans,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TagsTableAnnotationComposer get tagId {
-    final $$TagsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.tagId,
-      referencedTable: $db.tags,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TagsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.tags,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$PlanTagsTableTableManager
-    extends
-        RootTableManager<
-          _$LocalDatabase,
-          $PlanTagsTable,
-          PlanTag,
-          $$PlanTagsTableFilterComposer,
-          $$PlanTagsTableOrderingComposer,
-          $$PlanTagsTableAnnotationComposer,
-          $$PlanTagsTableCreateCompanionBuilder,
-          $$PlanTagsTableUpdateCompanionBuilder,
-          (PlanTag, $$PlanTagsTableReferences),
-          PlanTag,
-          PrefetchHooks Function({bool planId, bool tagId})
-        > {
-  $$PlanTagsTableTableManager(_$LocalDatabase db, $PlanTagsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$PlanTagsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$PlanTagsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$PlanTagsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> planId = const Value.absent(),
-            Value<int> tagId = const Value.absent(),
-          }) => PlanTagsCompanion(id: id, planId: planId, tagId: tagId),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int planId,
-            required int tagId,
-          }) => PlanTagsCompanion.insert(id: id, planId: planId, tagId: tagId),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$PlanTagsTable, PlanTag>(table),
-                  $$PlanTagsTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({planId = false, tagId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (planId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.planId,
-                        referencedTable: $$PlanTagsTableReferences._planIdTable(
-                          db,
-                        ),
-                        referencedColumn: $$PlanTagsTableReferences
-                            ._planIdTable(db)
-                            .id,
-                      ) as T;
-                    }
-                    if (tagId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.tagId,
-                        referencedTable: $$PlanTagsTableReferences._tagIdTable(
-                          db,
-                        ),
-                        referencedColumn: $$PlanTagsTableReferences
-                            ._tagIdTable(db)
-                            .id,
-                      ) as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$PlanTagsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$LocalDatabase,
-      $PlanTagsTable,
-      PlanTag,
-      $$PlanTagsTableFilterComposer,
-      $$PlanTagsTableOrderingComposer,
-      $$PlanTagsTableAnnotationComposer,
-      $$PlanTagsTableCreateCompanionBuilder,
-      $$PlanTagsTableUpdateCompanionBuilder,
-      (PlanTag, $$PlanTagsTableReferences),
-      PlanTag,
-      PrefetchHooks Function({bool planId, bool tagId})
+      PrefetchHooks Function({bool journalTagsRefs})
     >;
 typedef $$JournalsTableCreateCompanionBuilder = JournalsCompanion Function({
   Value<int> id,
@@ -3834,8 +3055,6 @@ class $LocalDatabaseManager {
   $$TodosTableTableManager get todos =>
       $$TodosTableTableManager(_db, _db.todos);
   $$TagsTableTableManager get tags => $$TagsTableTableManager(_db, _db.tags);
-  $$PlanTagsTableTableManager get planTags =>
-      $$PlanTagsTableTableManager(_db, _db.planTags);
   $$JournalsTableTableManager get journals =>
       $$JournalsTableTableManager(_db, _db.journals);
   $$JournalTagsTableTableManager get journalTags =>

@@ -1,5 +1,3 @@
-import 'package:elcinorch/features/tag/data/repositories/tag_repository_impl.dart';
-
 import '../core/database/local/local_database.dart';
 import '../features/todo/presentation/controllers/todo_controller.dart';
 import '../features/todo/data/data_sources/todo_local_data_source.dart';
@@ -30,6 +28,7 @@ import '../features/journal/domain/usecases/delete_journal.dart';
 
 import '../features/tag/presentation/controllers/tag_controller.dart';
 import '../features/tag/data/data_sources/tag_local_data_source.dart';
+import '../features/tag/data/repositories/tag_repository_impl.dart';
 import '../features/tag/domain/usecases/journal_tags.dart';
 import '../features/tag/domain/usecases/get_tags.dart';
 import '../features/tag/domain/usecases/get_tag.dart';
@@ -42,6 +41,15 @@ import '../features/journal/data/repositories/journal_tag_repository_impl.dart';
 import '../features/journal/domain/usecases/create_journal_tag.dart';
 import '../features/journal/domain/usecases/get_all_journal_tags.dart';
 import '../features/journal/domain/usecases/delete_journal_tag.dart';
+
+import '../core/services/auth_service.dart';
+import '../features/auth/data/data_sources/auth_remote_data_source.dart';
+import '../features/auth/data/repositories/auth_repository_impl.dart';
+import '../features/auth/domain/usecases/user_sign_up.dart';
+import '../features/auth/domain/usecases/user_sign_in.dart';
+import '../features/auth/domain/usecases/user_sign_out.dart';
+import '../features/auth/domain/usecases/get_current_user.dart';
+import '../features/auth/presentation/controllers/auth_controller.dart';
 
 class AppDependencies {
   static final localDatabase = LocalDatabase();
@@ -121,5 +129,20 @@ class AppDependencies {
     getJournalTagsUseCase: getAllJournalTagsUseCase,
     createJournalTagUseCase: createJournalTagUseCase,
     deleteJournalTagUseCase: deleteJournalTagUseCase
+  );
+
+  static final authService = AuthService();
+  static final authRemoteDataSource = AuthRemoteDataSource(auth: authService);
+  static final authRepository = AuthRepositoryImpl(authRemoteDataSource);
+  static final userSignUpUseCase = UserSignUp(authRepository);
+  static final userSignInUseCase = UserSignIn(authRepository);
+  static final userSignOutUseCase = UserSignOut(authRepository);
+  static final getCurrentUserUseCase = GetCurrentUser(authRepository);
+
+  static final authController = AuthController(
+    userSignUpUseCase: userSignUpUseCase, 
+    userSignInUseCase: userSignInUseCase, 
+    userSignOutUseCase: userSignOutUseCase,
+    getCurrentUserUseCase: getCurrentUserUseCase
   );
 }

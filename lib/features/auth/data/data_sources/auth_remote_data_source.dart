@@ -40,6 +40,22 @@ class AuthRemoteDataSource {
     );
   }
 
+  Future<List<UserModel>> getUsers() async {
+    final snapshot = await instance.collection('users').get();
+
+    if(snapshot.docs.isEmpty){
+      throw Exception('User not found.');
+    }
+
+    return snapshot.docs.map((user) => UserModel(
+      uid: user.id, 
+      firstName: user['first_name'], 
+      lastName: user['last_name'], 
+      dateOfBirth: (user['date_of_birth'] as Timestamp).toDate(), 
+      email: user['email_address']
+    )).toList();
+  }
+
   Future<UserModel> signIn({
     required String email,
     required String password

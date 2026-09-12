@@ -1,3 +1,4 @@
+import 'package:elcinorch/features/journal/presentation/widgets/shared_journal_card.dart';
 import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,7 @@ class AuthenticatedPage extends StatefulWidget {
 class _AuthenticatedPageState extends State<AuthenticatedPage> {
   final authController = AppDependencies.authController;
   final progressController = AppDependencies.progressController;
+  final journalController = AppDependencies.journalController;
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
 
   void _loadData() async {
     await progressController.loadProgress();
+    await journalController.getSharedJournal();
   }
 
   String nameInitial(String firstName) {
@@ -47,10 +50,11 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge([ authController, progressController ]), 
+      animation: Listenable.merge([ authController, progressController, journalController ]), 
       builder: (context, child) {
         final user = authController.user;
         final progress = progressController.progress;
+        final sharedJournals = journalController.sharedJournals;
         if(progress == null) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -65,6 +69,7 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
 
         final planner = progress.planner;
         final journal = progress.journal;
+        final userSharedJournal = sharedJournals.where((journal) => journal.userUid == user.uid).toList();
 
         return Scaffold(
           body: SingleChildScrollView(
@@ -118,6 +123,26 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
                   StreakCard(progress: journal),
                   TaskProgressCard(progress: planner),
                   JournalProgressCard(progress: journal),
+                  const SizedBox(height: 16),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: userSharedJournal.length,
+                    separatorBuilder:(context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemBuilder:(context, index) {
+                      final publicJournal = userSharedJournal[index];
+                      return SharedJournalCard(
+                        shared: publicJournal, 
+                        controller: journalController,
+                        user: user,
+                        onDelete: () async {
+                          await journalController.deleteSharedJournal(publicJournal.uid);
+                        },
+                      );
+                    },
+                  )
                 ],
               )
             ),

@@ -180,7 +180,7 @@ class JournalController extends ChangeNotifier {
   }) async {
     _clearError();
 
-    sharingJournal == journal.id;
+    sharingJournal = journal.id;
     _setLoading(true);
 
     try{
@@ -196,7 +196,7 @@ class JournalController extends ChangeNotifier {
       notifyListeners();
       return false;
     } finally {
-      sharingJournal == null;
+      sharingJournal = null;
       _setLoading(false);
     }
   }

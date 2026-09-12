@@ -4,27 +4,32 @@ import '../../domain/usecases/user_sign_up.dart';
 import '../../domain/usecases/user_sign_in.dart';
 import '../../domain/usecases/user_sign_out.dart';
 import '../../domain/usecases/get_current_user.dart';
+import '../../domain/usecases/get_users.dart';
 
 class AuthController extends ChangeNotifier {
   final UserSignUp userSignUpUseCase;
   final UserSignIn userSignInUseCase;
   final UserSignOut userSignOutUseCase;
   final GetCurrentUser getCurrentUserUseCase;
+  final GetUsers getUsersUseCase;
 
   AuthController({
     required this.userSignUpUseCase,
     required this.userSignInUseCase,
     required this.userSignOutUseCase,
-    required this.getCurrentUserUseCase
+    required this.getCurrentUserUseCase,
+    required this.getUsersUseCase
   }) { 
     loadCurrentUser(); 
   }
 
   User? _user;
+  List<User> _users = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   User? get user => _user;
+  List<User> get users => _users;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _user != null;
@@ -40,6 +45,21 @@ class AuthController extends ChangeNotifier {
 
   String? _formattedError(Object error) {
     return error.toString().replaceFirst('Exceptions: ', '');
+  }
+
+  Future<bool> loadUsers() async {
+    _clearError();
+    _setLoading(true);
+    try {
+      _users = await getUsersUseCase();
+      return true;
+    } catch (err) {
+      _errorMessage = _formattedError(err);
+      notifyListeners();
+      return false;
+    } finally {
+      _setLoading(false);
+    }
   }
 
   Future<bool> signUp({

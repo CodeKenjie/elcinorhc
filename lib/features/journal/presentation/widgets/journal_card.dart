@@ -85,24 +85,24 @@ class _JournalCardState extends State<JournalCard> {
     if(!mounted) return;
 
     if(success){
-      ScaffoldMessenger.of(context).showMaterialBanner(
-        MaterialBanner(
-          leading: Icon(Icons.check_circle, color: Theme.of(context).colorScheme.secondary),
-          content: Text(
-            'Shared ${widget.journal.title} to the public everyone can now see your journal',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.secondary
-            ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Shared ${widget.journal.title} to the public everyone can now see your journal',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ],
           ), 
           backgroundColor: Colors.green,
-          actions: [
-            IconButton(
-              onPressed: (){
-                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              }, 
-              icon: Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
-            )
-          ],
         )
       );
     } else {
@@ -113,7 +113,10 @@ class _JournalCardState extends State<JournalCard> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: authController, 
+      listenable: Listenable.merge([
+        authController,
+        widget.controller
+      ]), 
       builder: (context, child) {
         return Slidable(
           endActionPane: ActionPane(

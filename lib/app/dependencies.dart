@@ -56,6 +56,7 @@ import '../features/auth/domain/usecases/user_sign_up.dart';
 import '../features/auth/domain/usecases/user_sign_in.dart';
 import '../features/auth/domain/usecases/user_sign_out.dart';
 import '../features/auth/domain/usecases/get_current_user.dart';
+import '../features/auth/domain/usecases/get_users.dart';
 import '../features/auth/presentation/controllers/auth_controller.dart';
 
 import '../features/progress/domain/usecases/get_user_progress.dart';
@@ -159,12 +160,14 @@ class AppDependencies {
   static final userSignInUseCase = UserSignIn(authRepository);
   static final userSignOutUseCase = UserSignOut(authRepository);
   static final getCurrentUserUseCase = GetCurrentUser(authRepository);
+  static final getUsersUseCase = GetUsers(authRepository);
 
   static final authController = AuthController(
     userSignUpUseCase: userSignUpUseCase, 
     userSignInUseCase: userSignInUseCase, 
     userSignOutUseCase: userSignOutUseCase,
-    getCurrentUserUseCase: getCurrentUserUseCase
+    getCurrentUserUseCase: getCurrentUserUseCase,
+    getUsersUseCase: getUsersUseCase
   );
 
   static final getUserProgressUseCase = GetUserProgress(

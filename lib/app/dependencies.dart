@@ -42,6 +42,13 @@ import '../features/journal/domain/usecases/create_journal_tag.dart';
 import '../features/journal/domain/usecases/get_all_journal_tags.dart';
 import '../features/journal/domain/usecases/delete_journal_tag.dart';
 
+import '../features/journal/data/data_sources/shared_journal_remote_data_source.dart';
+import '../features/journal/data/repositories/shared_journal_repository_impl.dart';
+import '../features/journal/domain/usecases/share_journal.dart';
+import '../features/journal/domain/usecases/get_shared_journal.dart';
+import '../features/journal/domain/usecases/update_shared_journal.dart';
+import '../features/journal/domain/usecases/delete_shared_journal.dart';
+
 import '../core/services/auth_service.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
@@ -51,8 +58,12 @@ import '../features/auth/domain/usecases/user_sign_out.dart';
 import '../features/auth/domain/usecases/get_current_user.dart';
 import '../features/auth/presentation/controllers/auth_controller.dart';
 
+import '../features/progress/domain/usecases/get_user_progress.dart';
+import '../features/progress/presentation/controllers/progress_controller.dart';
+
 class AppDependencies {
   static final localDatabase = LocalDatabase();
+  static final authService = AuthService();
 
   static final todoLocalDataSource = TodoLocalDataSource(localDatabase);
   static final todoRepository = TodoRepositoryImpl(todoLocalDataSource);
@@ -95,12 +106,23 @@ class AppDependencies {
   static final editJournalUseCase = EditJournal(journalRepository);
   static final deleteJournalUseCase = DeleteJournal(journalRepository);
 
+  static final sharedJournalRemoteDataSource  = SharedJournalRemoteDataSource(auth: authService);
+  static final sharedJournalRepository = SharedJournalRepositoryImpl(sharedJournalRemoteDataSource);
+  static final shareJournalUseCase = ShareJournal(sharedJournalRepository);
+  static final getSharedJournalUseCase = GetSharedJournal(sharedJournalRepository);
+  static final updateSharedJournalUseCase = UpdateSharedJournal(sharedJournalRepository);
+  static final deleteSharedJournalUseCase = DeleteSharedJournal(sharedJournalRepository);
+
   static final journalController = JournalController(
     getJournalUseCase: getJournalUseCase,
     getJournalsUseCase: getJournalsUseCase,
     createJournalUseCase: createJournalUseCase,
     editJournalUseCase: editJournalUseCase,
-    deleteJournalUseCase: deleteJournalUseCase
+    deleteJournalUseCase: deleteJournalUseCase,
+    shareJournalUseCase: shareJournalUseCase,
+    getSharedJournalUseCase: getSharedJournalUseCase,
+    updateSharedJournalUseCase: updateSharedJournalUseCase,
+    deleteSharedJournalUseCase: deleteSharedJournalUseCase
   );
 
   static final tagLocalDataSource = TagLocalDataSource(localDatabase);
@@ -131,7 +153,6 @@ class AppDependencies {
     deleteJournalTagUseCase: deleteJournalTagUseCase
   );
 
-  static final authService = AuthService();
   static final authRemoteDataSource = AuthRemoteDataSource(auth: authService);
   static final authRepository = AuthRepositoryImpl(authRemoteDataSource);
   static final userSignUpUseCase = UserSignUp(authRepository);
@@ -145,4 +166,14 @@ class AppDependencies {
     userSignOutUseCase: userSignOutUseCase,
     getCurrentUserUseCase: getCurrentUserUseCase
   );
+
+  static final getUserProgressUseCase = GetUserProgress(
+    todoRepository: todoRepository, 
+    journalRepository: journalRepository
+  );
+
+  static final progressController = ProgressController(
+    getUserProgressUseCase: getUserProgressUseCase
+  );
+
 }

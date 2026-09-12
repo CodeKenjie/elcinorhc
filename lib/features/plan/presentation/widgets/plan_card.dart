@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:elcinorch/features/plan/domain/entities/plan.dart';
 import 'package:elcinorch/features/todo/presentation/controllers/todo_controller.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
+import 'package:elcinorch/features/todo/domain/entities/todo.dart';
 
 class PlanCard extends StatelessWidget {
   final Plan plan;
@@ -24,10 +25,21 @@ class PlanCard extends StatelessWidget {
   });
 
   String _formattedDate(DateTime? date){
-    if (date == null) {
-      return '';
-    }
+    if (date == null) return '';
     return DateFormat('MMM dd, yyyy EEE').format(date).toString();
+  }
+
+  double calculateProgress(List<Todo> todos){
+    if(todos.isEmpty) return 0.0;
+
+    final completed = todos.where((todo) => todo.completed).length;
+
+    return completed / todos.length;
+  }
+
+  String _formattedTime(DateTime? date){
+    if (date == null) return '';
+    return DateFormat('h:mm a').format(date).toString();
   }
 
   @override
@@ -35,104 +47,108 @@ class PlanCard extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    return Slidable(
-      startActionPane: plan.completed ? null : ActionPane(
-        motion: ScrollMotion(), 
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            onPressed: onEdit,
-            icon: Icons.edit,
-            backgroundColor: Theme.of(context).colorScheme.tertiary,
-            borderRadius: BorderRadius.circular(20),
+    return ListenableBuilder(
+      listenable: todoController, 
+      builder: (context, child) {
+        final todos = todoController.todos.where((todo){
+          if(todo.planId == null) return false;
+          return todo.planId == plan.id;
+        }).toList();
+
+        return Slidable(
+          startActionPane: plan.completed ? null : ActionPane(
+            motion: ScrollMotion(), 
+            extentRatio: 0.25,
+            children: [
+              SlidableAction(
+                onPressed: onEdit,
+                icon: Icons.edit,
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ]
           ),
-        ]
-      ),
-      endActionPane: ActionPane(
-        motion: ScrollMotion(), 
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            onPressed: onDelete,
-            icon: Icons.delete_rounded,
-            backgroundColor: Colors.redAccent,
-            borderRadius: BorderRadius.circular(20),
+          endActionPane: ActionPane(
+            motion: ScrollMotion(), 
+            extentRatio: 0.25,
+            children: [
+              SlidableAction(
+                onPressed: onDelete,
+                icon: Icons.delete_rounded,
+                backgroundColor: Colors.redAccent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ]
           ),
-        ]
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.circular(5)
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row (
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row (
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      plan.title,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          plan.title,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        Text(
+                          plan.dueAt.isBefore(today) ? 'Expired plan' : _formattedDate(plan.dueAt),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.tertiary
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      plan.dueAt.isBefore(today) ? 'Expired plan' : _formattedDate(plan.dueAt),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.tertiary
+                    Checkbox(
+                      value: plan.completed, 
+                      visualDensity: VisualDensity.compact,
+                      activeColor: const Color.fromARGB(255, 76, 175, 142),
+                      shape: const CircleBorder(),
+                      side: BorderSide(
+                        color: const Color.fromARGB(255, 76, 175, 142)
                       ),
-                    ),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onChanged: onChanged == null ? null : (value) {
+                        if(value != null) {
+                          onChanged!(value);
+                        }
+                      }
+                    )
                   ],
                 ),
-                Checkbox(
-                  value: plan.completed, 
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  onChanged: onChanged == null ? null : (value) {
-                    if(value != null) {
-                      onChanged!(value);
-                    }
-                  }
-                )
-              ],
-            ),
-            if(plan.body != '')... [
-              const SizedBox(height: 5),
-              Text(
-                plan.body ?? '',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-            AnimatedBuilder(
-              animation: todoController, 
-              builder: (context, child) {
-                final planTodos = todoController.todos.where((todo) {
-                  if(todo.planId == null) return false;
-                  return todo.planId == plan.id;
-                }).toList();
-
-                if (planTodos.isEmpty) return const SizedBox.shrink();
-
-                return Column(
+                if(plan.body != '')... [
+                  const SizedBox(height: 5),
+                  Text(
+                    plan.body ?? '',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: planTodos.map((todo) {
+                  children: todos.map((todo) {
                     return Slidable(
                       endActionPane: ActionPane(
                         motion: ScrollMotion(),
                         extentRatio: 0.25,
                         children: [
                           SlidableAction(
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
                             icon: Icons.edit,
                             onPressed: (context){
                               showDialog(
@@ -147,6 +163,7 @@ class PlanCard extends StatelessWidget {
                           ),
                           SlidableAction(
                             icon: Icons.remove_circle_outline_outlined,
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
                             onPressed: (context){
                               todoController.delete(todo.id);
                             }
@@ -155,14 +172,18 @@ class PlanCard extends StatelessWidget {
                       ),
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5)
+                          borderRadius: BorderRadius.circular(20)
                         ),
                         child: Row (
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Checkbox(
+                              activeColor: const Color.fromARGB(255, 76, 175, 142),
                               value: todo.completed, 
                               shape: const CircleBorder(),
+                              side: BorderSide(
+                                color:const Color.fromARGB(255, 76, 175, 142)
+                              ),
                               visualDensity: VisualDensity.compact,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (value){
@@ -170,12 +191,24 @@ class PlanCard extends StatelessWidget {
                               }
                             ),
                             Expanded(
-                              child: Text(
-                                todo.title,
-                                style: TextStyle(
-                                  fontSize: 14
-                                ),
-                              )
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    todo.title,
+                                    style: TextStyle(
+                                      fontSize: 14
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_formattedTime(todo.startsAt)} - ${_formattedTime(todo.endsAt)}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.tertiary
+                                    ),
+                                  )
+                                ],
+                              ) 
                             ),
                             if(todo.expiresAt!.isBefore(today))... [
                               Text(
@@ -191,39 +224,65 @@ class PlanCard extends StatelessWidget {
                       )
                     );
                   }).toList(),
-                );
-              }
-            ),
-            const SizedBox(height: 8),
-            if(!plan.dueAt.isBefore(today))... [
-              GestureDetector(
-                onTap: addTodo,
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: Row (
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 8),
+                if(!plan.dueAt.isBefore(today))... [
+                  GestureDetector(
+                    onTap: addTodo,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 76, 175, 142),
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: Row (
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_task, size: 14, color: Colors.white),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Add task',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  )
+                ],
+                if(todos.isNotEmpty)... [
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
-                      Icon(Icons.add_task, size: 14, color: Theme.of(context).colorScheme.primary),
-                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(20),
+                          child: LinearProgressIndicator(
+                            value: calculateProgress(todos),
+                            backgroundColor: const Color.fromARGB(55, 67, 136, 111),
+                            minHeight: 6,
+                            color: const Color.fromARGB(255, 76, 175, 142),
+                          )
+                        )
+                      ),
+                      const SizedBox(width: 8),
                       Text(
-                        'Add task',
+                        '${(calculateProgress(todos) * 100).round()}%',
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary
+                          fontSize: 14,
+                          color: const Color.fromARGB(255, 76, 175, 142),
                         ),
                       )
                     ],
-                  ),
-                )
-              )
-            ]
-          ]
-        ),
-      )
+                  )
+                ]
+              ]
+            ),
+          )
+        );
+      }
     );
   }
 }

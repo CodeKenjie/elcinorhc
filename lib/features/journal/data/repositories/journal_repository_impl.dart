@@ -31,4 +31,9 @@ class JournalRepositoryImpl implements JournalRepository {
   Future<void> deleteJournal(int id) {
     return localDataSource.deleteJournal(id);
   }
+
+  @override
+  Future<List<Journal>> getEntriesBetween({ required DateTime start, required DateTime end }) {
+    return localDataSource.getEntriesBetween(start: start, end: end);
+  }
 }

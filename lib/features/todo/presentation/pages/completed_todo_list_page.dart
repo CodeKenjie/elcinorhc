@@ -19,11 +19,6 @@ class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
     _loadTodos();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<void> _loadTodos() async {
     await todoController.loadTodos();
   }

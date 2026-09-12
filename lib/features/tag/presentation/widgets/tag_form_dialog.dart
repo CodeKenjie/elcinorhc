@@ -23,6 +23,8 @@ class _TagFormDialogState extends State<TagFormDialog> {
   }
 
   void _submit() async {
+    if(widget.controller.isLoading) return;
+
     final name = _nameController.text;
     bool success;
 

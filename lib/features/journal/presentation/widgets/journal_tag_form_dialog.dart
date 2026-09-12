@@ -33,6 +33,8 @@ class _JournalTagFormDialogState extends State<JournalTagFormDialog> {
   }
 
   void _submit() async {
+    if(tagController.isLoading) return;
+
     final journalId = widget.journalId;
     final tagId = selectedTag;
     bool success;

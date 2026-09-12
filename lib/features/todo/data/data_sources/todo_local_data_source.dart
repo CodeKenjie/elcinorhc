@@ -13,21 +13,28 @@ class TodoLocalDataSource {
       id: todo.id, 
       planId: todo.planId, 
       title: todo.title, 
+      startsAt: todo.startsAt,
+      endsAt: todo.endsAt,
+      expiresAt: todo.expiresAt,
       completed: todo.completed, 
+      completedAt: todo.completedAt,
       createdAt: todo.createdAt, 
-      expiresAt: todo.expiresAt
     )).toList();
   }
 
   Future<TodoModel> addTodo({
     int? planId,
     required String title,
+    DateTime? startsAt,
+    DateTime? endsAt,
     DateTime? expiresAt
   }) async {
     final id = await localDatabase.into(localDatabase.todos).insert(
       TodosCompanion.insert(
         planId: Value(planId),
         title: title,
+        startsAt: Value(startsAt),
+        endsAt: Value(endsAt),
         expiresAt: Value(expiresAt),
       )
     );
@@ -38,17 +45,29 @@ class TodoLocalDataSource {
       id: todo.id, 
       planId: todo.planId, 
       title: todo.title, 
+      startsAt: todo.startsAt,
+      endsAt: todo.endsAt,
+      expiresAt: todo.expiresAt,
       completed: todo.completed, 
+      completedAt: todo.completedAt,
       createdAt: todo.createdAt, 
-      expiresAt: todo.expiresAt
     );
   }
 
-  Future<int> updateTodo({required int id, int? planId, required String title, DateTime? expiresAt}){
+  Future<int> updateTodo({
+    required int id, 
+    int? planId, 
+    required String title, 
+    DateTime? startsAt,
+    DateTime? endsAt,
+    DateTime? expiresAt
+  }) {
     return (localDatabase.update(localDatabase.todos)..where((todo) => todo.id.equals(id))).write(
       TodosCompanion(
         planId: Value(planId),
         title: Value(title),
+        startsAt: Value(startsAt),
+        endsAt: Value(endsAt),
         expiresAt: Value(expiresAt)
       )
     );
@@ -56,7 +75,10 @@ class TodoLocalDataSource {
 
   Future<int> updateTodoStatus({ required int id, required bool completed }) {
     return (localDatabase.update(localDatabase.todos)..where((todo) => todo.id.equals(id))).write(
-      TodosCompanion( completed: Value(completed) )
+      TodosCompanion( 
+        completed: Value(completed), 
+        completedAt: Value( completed ? DateTime.now() : null )
+      )
     );
   }
 

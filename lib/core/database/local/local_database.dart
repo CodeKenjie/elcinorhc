@@ -15,9 +15,12 @@ class Todos extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get planId => integer().nullable().references(Plans, #id, onDelete: KeyAction.cascade)();
   TextColumn get title => text()();
-  BoolColumn get completed => boolean().withDefault(const Constant(false))();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get startsAt => dateTime().nullable()();
+  DateTimeColumn get endsAt => dateTime().nullable()();
   DateTimeColumn get expiresAt => dateTime().nullable()();
+  BoolColumn get completed => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get completedAt => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
 class Plans extends Table {

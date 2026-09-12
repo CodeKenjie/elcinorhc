@@ -29,6 +29,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _submit() async {
+    if(authController.isLoading) return;
+
     final firstName = _firstNameController.text;
     final lastName = _lastNameController.text;
     final email = _emailController.text;
@@ -101,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     contentPadding: const EdgeInsets.only(left: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
-                      side: const BorderSide(color: Colors.black)
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary)
                     ),
                     leading: const Icon(Icons.calendar_month),
                     title: _dateOfBirth != null ? Text('${_dateOfBirth!.year}/${_dateOfBirth!.day}/${_dateOfBirth!.month}') : Text('Date of birth'),
@@ -174,14 +176,14 @@ class _SignUpPageState extends State<SignUpPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            color: Theme.of(context).colorScheme.primary
+                            color: const Color.fromARGB(255, 76, 175, 142),
                           ),
                           child: authController.isLoading 
                             ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary)) : Text(
                               'Sign up', 
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Theme.of(context).colorScheme.surface
+                                color: Colors.white
                               )
                             ),
                         ),

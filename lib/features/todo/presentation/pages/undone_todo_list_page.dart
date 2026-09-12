@@ -28,6 +28,11 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
     await todoController.loadTodos();
   }
 
+  bool _isToday(DateTime? date, DateTime startOfDay, DateTime endOfDay) {
+    if(date == null) return false;
+    return !date.isBefore(startOfDay) && date.isBefore(endOfDay);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,15 +60,14 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
 
           final todaysTodos = todoController.todos.where((todo) {
             if (todo.completed) return false;
-            if (todo.expiresAt == null) return false;
             if (todo.planId == null) return false;
-
-            return !todo.expiresAt!.isBefore(startOfDay) &&
-                todo.expiresAt!.isBefore(endOfDay);
+            return _isToday(todo.startsAt, startOfDay, endOfDay) || _isToday(todo.endsAt, startOfDay, endOfDay) || _isToday(todo.expiresAt, startOfDay, endOfDay);
           }).toList();
 
           final unplannedTodos = todoController.todos.where((todo) {
-            return !todo.completed && todo.planId == null;
+            if (todo.completed) return false;
+            if (todo.planId != null) return false;
+            return true;
           }).toList();
 
           return Padding(
@@ -163,7 +167,7 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 76, 175, 142),
         child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
@@ -182,7 +186,7 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(20),
         color: Theme.of(context).colorScheme.secondary
       ),
       child: Text(

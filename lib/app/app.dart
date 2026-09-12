@@ -41,11 +41,19 @@ class _ElcinorhcState extends State<Elcinorhc> {
       },
       home: Scaffold(      
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
           actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {}, 
+            GestureDetector(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color:  const Color.fromARGB(255, 76, 175, 142)
+                ),
+                child: Icon(Icons.notifications, color: Colors.white),
+              ),
             )
           ],
         ),
@@ -105,7 +113,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: Theme.of(context).colorScheme.primary
+                                        color: const Color.fromARGB(255, 76, 175, 142)
                                       ),
                                       child: authController.isLoading 
                                         ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary))
@@ -114,7 +122,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 18,
-                                            color: Theme.of(context).colorScheme.surface
+                                            color: Colors.white
                                           ),
                                       )
                                     ),
@@ -135,14 +143,14 @@ class _ElcinorhcState extends State<Elcinorhc> {
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: Theme.of(context).colorScheme.primary
+                                        color: const Color.fromARGB(255, 76, 175, 142)
                                       ),
                                       child: Text(
                                         'Sign in',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Theme.of(context).colorScheme.surface
+                                          color: Colors.white
                                         ),
                                       )
                                     ),
@@ -163,7 +171,7 @@ class _ElcinorhcState extends State<Elcinorhc> {
         ),
         body: _pages[_currentIndex],
         bottomNavigationBar: NavigationBar(
-          height: 40,
+          height: 50,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           selectedIndex: _currentIndex,
           onDestinationSelected: (int index) {
@@ -171,7 +179,6 @@ class _ElcinorhcState extends State<Elcinorhc> {
               _currentIndex = index;
             });
           },
-          backgroundColor: Colors.transparent,
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),

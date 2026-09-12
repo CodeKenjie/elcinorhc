@@ -42,6 +42,8 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
   }
 
   Future<void> _submit() async {
+    if(widget.controller.isLoading) return;
+
     final String title = _titleController.text.trim();
     final String body = _bodyController.text.trim();
     final DateTime dueAt = _selectedDate ?? widget.dueAt;

@@ -432,6 +432,37 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _startsAtMeta = const VerificationMeta(
+    'startsAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startsAt = GeneratedColumn<DateTime>(
+    'starts_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endsAtMeta = const VerificationMeta('endsAt');
+  @override
+  late final GeneratedColumn<DateTime> endsAt = GeneratedColumn<DateTime>(
+    'ends_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
+    'expires_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _completedMeta = const VerificationMeta(
     'completed',
   );
@@ -447,6 +478,17 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -459,25 +501,17 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
-    'expiresAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
-    'expires_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     planId,
     title,
-    completed,
-    createdAt,
+    startsAt,
+    endsAt,
     expiresAt,
+    completed,
+    completedAt,
+    createdAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -508,22 +542,43 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
-    if (data.containsKey('completed')) {
+    if (data.containsKey('starts_at')) {
       context.handle(
-        _completedMeta,
-        completed.isAcceptableOrUnknown(data['completed']!, _completedMeta),
+        _startsAtMeta,
+        startsAt.isAcceptableOrUnknown(data['starts_at']!, _startsAtMeta),
       );
     }
-    if (data.containsKey('created_at')) {
+    if (data.containsKey('ends_at')) {
       context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+        _endsAtMeta,
+        endsAt.isAcceptableOrUnknown(data['ends_at']!, _endsAtMeta),
       );
     }
     if (data.containsKey('expires_at')) {
       context.handle(
         _expiresAtMeta,
         expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
+    }
+    if (data.containsKey('completed')) {
+      context.handle(
+        _completedMeta,
+        completed.isAcceptableOrUnknown(data['completed']!, _completedMeta),
+      );
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
     return context;
@@ -547,18 +602,30 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
         DriftSqlType.string,
         data['${effectivePrefix}title'],
       )!,
-      completed: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}completed'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
+      startsAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
+        data['${effectivePrefix}starts_at'],
+      ),
+      endsAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ends_at'],
+      ),
       expiresAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}expires_at'],
       ),
+      completed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}completed'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -572,16 +639,22 @@ class Todo extends DataClass implements Insertable<Todo> {
   final int id;
   final int? planId;
   final String title;
-  final bool completed;
-  final DateTime createdAt;
+  final DateTime? startsAt;
+  final DateTime? endsAt;
   final DateTime? expiresAt;
+  final bool completed;
+  final DateTime? completedAt;
+  final DateTime createdAt;
   const Todo({
     required this.id,
     this.planId,
     required this.title,
-    required this.completed,
-    required this.createdAt,
+    this.startsAt,
+    this.endsAt,
     this.expiresAt,
+    required this.completed,
+    this.completedAt,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -591,11 +664,20 @@ class Todo extends DataClass implements Insertable<Todo> {
       map['plan_id'] = Variable<int>(planId);
     }
     map['title'] = Variable<String>(title);
-    map['completed'] = Variable<bool>(completed);
-    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || startsAt != null) {
+      map['starts_at'] = Variable<DateTime>(startsAt);
+    }
+    if (!nullToAbsent || endsAt != null) {
+      map['ends_at'] = Variable<DateTime>(endsAt);
+    }
     if (!nullToAbsent || expiresAt != null) {
       map['expires_at'] = Variable<DateTime>(expiresAt);
     }
+    map['completed'] = Variable<bool>(completed);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -606,11 +688,20 @@ class Todo extends DataClass implements Insertable<Todo> {
           ? const Value.absent()
           : Value(planId),
       title: Value(title),
-      completed: Value(completed),
-      createdAt: Value(createdAt),
+      startsAt: startsAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startsAt),
+      endsAt: endsAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endsAt),
       expiresAt: expiresAt == null && nullToAbsent
           ? const Value.absent()
           : Value(expiresAt),
+      completed: Value(completed),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -623,9 +714,12 @@ class Todo extends DataClass implements Insertable<Todo> {
       id: serializer.fromJson<int>(json['id']),
       planId: serializer.fromJson<int?>(json['planId']),
       title: serializer.fromJson<String>(json['title']),
-      completed: serializer.fromJson<bool>(json['completed']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      startsAt: serializer.fromJson<DateTime?>(json['startsAt']),
+      endsAt: serializer.fromJson<DateTime?>(json['endsAt']),
       expiresAt: serializer.fromJson<DateTime?>(json['expiresAt']),
+      completed: serializer.fromJson<bool>(json['completed']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -635,9 +729,12 @@ class Todo extends DataClass implements Insertable<Todo> {
       'id': serializer.toJson<int>(id),
       'planId': serializer.toJson<int?>(planId),
       'title': serializer.toJson<String>(title),
-      'completed': serializer.toJson<bool>(completed),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'startsAt': serializer.toJson<DateTime?>(startsAt),
+      'endsAt': serializer.toJson<DateTime?>(endsAt),
       'expiresAt': serializer.toJson<DateTime?>(expiresAt),
+      'completed': serializer.toJson<bool>(completed),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -645,25 +742,36 @@ class Todo extends DataClass implements Insertable<Todo> {
     int? id,
     Value<int?> planId = const Value.absent(),
     String? title,
-    bool? completed,
-    DateTime? createdAt,
+    Value<DateTime?> startsAt = const Value.absent(),
+    Value<DateTime?> endsAt = const Value.absent(),
     Value<DateTime?> expiresAt = const Value.absent(),
+    bool? completed,
+    Value<DateTime?> completedAt = const Value.absent(),
+    DateTime? createdAt,
   }) => Todo(
     id: id ?? this.id,
     planId: planId.present ? planId.value : this.planId,
     title: title ?? this.title,
-    completed: completed ?? this.completed,
-    createdAt: createdAt ?? this.createdAt,
+    startsAt: startsAt.present ? startsAt.value : this.startsAt,
+    endsAt: endsAt.present ? endsAt.value : this.endsAt,
     expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
+    completed: completed ?? this.completed,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    createdAt: createdAt ?? this.createdAt,
   );
   Todo copyWithCompanion(TodosCompanion data) {
     return Todo(
       id: data.id.present ? data.id.value : this.id,
       planId: data.planId.present ? data.planId.value : this.planId,
       title: data.title.present ? data.title.value : this.title,
-      completed: data.completed.present ? data.completed.value : this.completed,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      startsAt: data.startsAt.present ? data.startsAt.value : this.startsAt,
+      endsAt: data.endsAt.present ? data.endsAt.value : this.endsAt,
       expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      completed: data.completed.present ? data.completed.value : this.completed,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -673,16 +781,28 @@ class Todo extends DataClass implements Insertable<Todo> {
           ..write('id: $id, ')
           ..write('planId: $planId, ')
           ..write('title: $title, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt, ')
+          ..write('expiresAt: $expiresAt, ')
           ..write('completed: $completed, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('expiresAt: $expiresAt')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, planId, title, completed, createdAt, expiresAt);
+  int get hashCode => Object.hash(
+    id,
+    planId,
+    title,
+    startsAt,
+    endsAt,
+    expiresAt,
+    completed,
+    completedAt,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -690,49 +810,67 @@ class Todo extends DataClass implements Insertable<Todo> {
           other.id == this.id &&
           other.planId == this.planId &&
           other.title == this.title &&
+          other.startsAt == this.startsAt &&
+          other.endsAt == this.endsAt &&
+          other.expiresAt == this.expiresAt &&
           other.completed == this.completed &&
-          other.createdAt == this.createdAt &&
-          other.expiresAt == this.expiresAt);
+          other.completedAt == this.completedAt &&
+          other.createdAt == this.createdAt);
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
   final Value<int> id;
   final Value<int?> planId;
   final Value<String> title;
-  final Value<bool> completed;
-  final Value<DateTime> createdAt;
+  final Value<DateTime?> startsAt;
+  final Value<DateTime?> endsAt;
   final Value<DateTime?> expiresAt;
+  final Value<bool> completed;
+  final Value<DateTime?> completedAt;
+  final Value<DateTime> createdAt;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.planId = const Value.absent(),
     this.title = const Value.absent(),
-    this.completed = const Value.absent(),
-    this.createdAt = const Value.absent(),
+    this.startsAt = const Value.absent(),
+    this.endsAt = const Value.absent(),
     this.expiresAt = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   TodosCompanion.insert({
     this.id = const Value.absent(),
     this.planId = const Value.absent(),
     required String title,
-    this.completed = const Value.absent(),
-    this.createdAt = const Value.absent(),
+    this.startsAt = const Value.absent(),
+    this.endsAt = const Value.absent(),
     this.expiresAt = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Todo> custom({
     Expression<int>? id,
     Expression<int>? planId,
     Expression<String>? title,
-    Expression<bool>? completed,
-    Expression<DateTime>? createdAt,
+    Expression<DateTime>? startsAt,
+    Expression<DateTime>? endsAt,
     Expression<DateTime>? expiresAt,
+    Expression<bool>? completed,
+    Expression<DateTime>? completedAt,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (planId != null) 'plan_id': planId,
       if (title != null) 'title': title,
-      if (completed != null) 'completed': completed,
-      if (createdAt != null) 'created_at': createdAt,
+      if (startsAt != null) 'starts_at': startsAt,
+      if (endsAt != null) 'ends_at': endsAt,
       if (expiresAt != null) 'expires_at': expiresAt,
+      if (completed != null) 'completed': completed,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -740,17 +878,23 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     Value<int>? id,
     Value<int?>? planId,
     Value<String>? title,
-    Value<bool>? completed,
-    Value<DateTime>? createdAt,
+    Value<DateTime?>? startsAt,
+    Value<DateTime?>? endsAt,
     Value<DateTime?>? expiresAt,
+    Value<bool>? completed,
+    Value<DateTime?>? completedAt,
+    Value<DateTime>? createdAt,
   }) {
     return TodosCompanion(
       id: id ?? this.id,
       planId: planId ?? this.planId,
       title: title ?? this.title,
-      completed: completed ?? this.completed,
-      createdAt: createdAt ?? this.createdAt,
+      startsAt: startsAt ?? this.startsAt,
+      endsAt: endsAt ?? this.endsAt,
       expiresAt: expiresAt ?? this.expiresAt,
+      completed: completed ?? this.completed,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -766,14 +910,23 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
-    if (completed.present) {
-      map['completed'] = Variable<bool>(completed.value);
+    if (startsAt.present) {
+      map['starts_at'] = Variable<DateTime>(startsAt.value);
     }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+    if (endsAt.present) {
+      map['ends_at'] = Variable<DateTime>(endsAt.value);
     }
     if (expiresAt.present) {
       map['expires_at'] = Variable<DateTime>(expiresAt.value);
+    }
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     return map;
   }
@@ -784,9 +937,12 @@ class TodosCompanion extends UpdateCompanion<Todo> {
           ..write('id: $id, ')
           ..write('planId: $planId, ')
           ..write('title: $title, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt, ')
+          ..write('expiresAt: $expiresAt, ')
           ..write('completed: $completed, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('expiresAt: $expiresAt')
+          ..write('completedAt: $completedAt, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -1876,17 +2032,23 @@ typedef $$TodosTableCreateCompanionBuilder = TodosCompanion Function({
   Value<int> id,
   Value<int?> planId,
   required String title,
-  Value<bool> completed,
-  Value<DateTime> createdAt,
+  Value<DateTime?> startsAt,
+  Value<DateTime?> endsAt,
   Value<DateTime?> expiresAt,
+  Value<bool> completed,
+  Value<DateTime?> completedAt,
+  Value<DateTime> createdAt,
 });
 typedef $$TodosTableUpdateCompanionBuilder = TodosCompanion Function({
   Value<int> id,
   Value<int?> planId,
   Value<String> title,
-  Value<bool> completed,
-  Value<DateTime> createdAt,
+  Value<DateTime?> startsAt,
+  Value<DateTime?> endsAt,
   Value<DateTime?> expiresAt,
+  Value<bool> completed,
+  Value<DateTime?> completedAt,
+  Value<DateTime> createdAt,
 });
 
 final class $$TodosTableReferences
@@ -1930,18 +2092,33 @@ class $$TodosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<bool> get completed => $composableBuilder(
-    column: $table.completed,
+  ColumnFilters<DateTime> get startsAt => $composableBuilder(
+    column: $table.startsAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnFilters<DateTime> get endsAt => $composableBuilder(
+    column: $table.endsAt,
     builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<DateTime> get expiresAt => $composableBuilder(
     column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1988,18 +2165,33 @@ class $$TodosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<bool> get completed => $composableBuilder(
-    column: $table.completed,
+  ColumnOrderings<DateTime> get startsAt => $composableBuilder(
+    column: $table.startsAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnOrderings<DateTime> get endsAt => $composableBuilder(
+    column: $table.endsAt,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
     column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2042,14 +2234,25 @@ class $$TodosTableAnnotationComposer
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
 
-  GeneratedColumn<bool> get completed =>
-      $composableBuilder(column: $table.completed, builder: (column) => column);
+  GeneratedColumn<DateTime> get startsAt =>
+      $composableBuilder(column: $table.startsAt, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+  GeneratedColumn<DateTime> get endsAt =>
+      $composableBuilder(column: $table.endsAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get expiresAt =>
       $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get completed =>
+      $composableBuilder(column: $table.completed, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   $$PlansTableAnnotationComposer get planId {
     final $$PlansTableAnnotationComposer composer = $composerBuilder(
@@ -2106,32 +2309,44 @@ class $$TodosTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int?> planId = const Value.absent(),
                 Value<String> title = const Value.absent(),
-                Value<bool> completed = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> startsAt = const Value.absent(),
+                Value<DateTime?> endsAt = const Value.absent(),
                 Value<DateTime?> expiresAt = const Value.absent(),
+                Value<bool> completed = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => TodosCompanion(
                 id: id,
                 planId: planId,
                 title: title,
-                completed: completed,
-                createdAt: createdAt,
+                startsAt: startsAt,
+                endsAt: endsAt,
                 expiresAt: expiresAt,
+                completed: completed,
+                completedAt: completedAt,
+                createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<int?> planId = const Value.absent(),
                 required String title,
-                Value<bool> completed = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> startsAt = const Value.absent(),
+                Value<DateTime?> endsAt = const Value.absent(),
                 Value<DateTime?> expiresAt = const Value.absent(),
+                Value<bool> completed = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => TodosCompanion.insert(
                 id: id,
                 planId: planId,
                 title: title,
-                completed: completed,
-                createdAt: createdAt,
+                startsAt: startsAt,
+                endsAt: endsAt,
                 expiresAt: expiresAt,
+                completed: completed,
+                completedAt: completedAt,
+                createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(

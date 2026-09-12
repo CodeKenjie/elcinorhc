@@ -55,6 +55,7 @@ class _JournalListPageState extends State<JournalListPage> {
                       final journal = journals[index];
                       return JournalCard(
                         journal: journal,
+                        controller: journalController,
                         journalTagController: journalTagController,
                         tagController: tagController,
                         onDelete: (context) async {
@@ -88,7 +89,7 @@ class _JournalListPageState extends State<JournalListPage> {
               child: Container (
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: const Color.fromARGB(255, 76, 175, 142),
                   borderRadius: BorderRadius.circular(10)
                 ),
                 child: Row (

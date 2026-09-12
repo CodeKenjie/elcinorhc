@@ -15,11 +15,15 @@ class TodoRepositoryImpl implements TodoRepository {
   Future<Todo> addTodo({
     int? planId,
     required String title,
+    DateTime? startsAt,
+    DateTime? endsAt,
     DateTime? expiresAt
   }) async {
     return await localDataSource.addTodo(
       planId: planId,
       title: title, 
+      startsAt: startsAt,
+      endsAt: endsAt,
       expiresAt: expiresAt
     );
   }
@@ -29,12 +33,16 @@ class TodoRepositoryImpl implements TodoRepository {
     int? planId,
     required int id,
     required String title,
+    DateTime? startsAt,
+    DateTime? endsAt,
     DateTime? expiresAt
   }) {
     return localDataSource.updateTodo(
       id: id, 
       planId: planId,
       title: title, 
+      startsAt: startsAt,
+      endsAt: endsAt,
       expiresAt: expiresAt
     );
   }

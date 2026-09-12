@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:intl/intl.dart';
+import '../../../progress/presentation/widgets/task_progress_card.dart';
+import '../../../progress/presentation/widgets/journal_progress_card.dart';
+import '../../../progress/presentation/widgets/streak_card.dart';
 
 class AuthenticatedPage extends StatefulWidget {
   const AuthenticatedPage({super.key});
@@ -11,6 +14,18 @@ class AuthenticatedPage extends StatefulWidget {
 
 class _AuthenticatedPageState extends State<AuthenticatedPage> {
   final authController = AppDependencies.authController;
+  final progressController = AppDependencies.progressController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadData();
+  }
+
+  void _loadData() async {
+    await progressController.loadProgress();
+  }
 
   String nameInitial(String firstName) {
     if(firstName.contains(" ")) {
@@ -31,10 +46,16 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: authController, 
+    return AnimatedBuilder(
+      animation: Listenable.merge([ authController, progressController ]), 
       builder: (context, child) {
         final user = authController.user;
+        final progress = progressController.progress;
+        if(progress == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
         if(user == null) {
           return const Scaffold(
@@ -42,65 +63,64 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
           );
         }
 
+        final planner = progress.planner;
+        final journal = progress.journal;
+
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column (
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: 30)),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              _capitalize("${user.firstName} ${user.lastName}"),
-                              style: TextStyle(
-                                fontSize: 24
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column (
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: const Color.fromARGB(255, 76, 175, 142),
+                          child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: 30)),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                _capitalize("${user.firstName} ${user.lastName}"),
+                                style: TextStyle(
+                                  fontSize: 24
+                                ),
                               ),
-                            ),
-                            Text(
-                              user.email,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.tertiary
+                              Text(
+                                user.email,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.tertiary
+                                ),
                               ),
-                            ),
-                            Text(
-                              _formattedDate(user.dateOfBirth),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).colorScheme.tertiary
+                              Text(
+                                _formattedDate(user.dateOfBirth),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).colorScheme.tertiary
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          )
                         )
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: 5,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(height: 8);
-                    },
-                    itemBuilder: (context, index) {
-                      return Text(user.uid);
-                    }
-                  )
-                )
-              ],
-            )
+                  StreakCard(progress: journal),
+                  TaskProgressCard(progress: planner),
+                  JournalProgressCard(progress: journal),
+                ],
+              )
+            ),
           ),
         );   
       }

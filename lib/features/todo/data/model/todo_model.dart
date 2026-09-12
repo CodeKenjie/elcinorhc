@@ -5,9 +5,12 @@ class TodoModel extends Todo {
     required super.id,
     required super.planId,
     required super.title,
+    required super.startsAt,
+    required super.endsAt,
+    required super.expiresAt,
     required super.completed,
+    required super.completedAt,
     required super.createdAt,
-    required super.expiresAt
   });
 
   factory TodoModel.fromEntity(Todo todo){
@@ -15,9 +18,12 @@ class TodoModel extends Todo {
       id: todo.id,
       planId: todo.planId,
       title: todo.title,
+      startsAt: todo.startsAt,
+      endsAt: todo.endsAt,
+      expiresAt: todo.expiresAt,
       completed: todo.completed,
+      completedAt: todo.completedAt,
       createdAt: todo.createdAt,
-      expiresAt: todo.expiresAt
     );
   }
 }

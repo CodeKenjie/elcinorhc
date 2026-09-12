@@ -22,6 +22,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _submit() async {
+    if(authController.isLoading) return;
+
     final email = _emailController.text;
     final password = _passwordController.text;
 
@@ -95,14 +97,14 @@ class _SignInPageState extends State<SignInPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            color: Theme.of(context).colorScheme.primary
+                            color: const Color.fromARGB(255, 76, 175, 142),
                           ),
                           child: authController.isLoading
                             ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary)) :  Text(
                               'Sign in', 
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Theme.of(context).colorScheme.surface
+                                color: Colors.white
                               )
                             ),
                         ),

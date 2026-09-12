@@ -80,7 +80,7 @@ class _PlanPageState extends State<PlanPage> {
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.secondary,
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: Column(
                               children: [
@@ -159,7 +159,7 @@ class _PlanPageState extends State<PlanPage> {
           )
       ),
       floatingActionButton: FloatingActionButton(
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 76, 175, 142),
         child: const Icon(Icons.add),
         onPressed: () {
           final now = DateTime.now();

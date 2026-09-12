@@ -56,7 +56,13 @@ class TodoController extends ChangeNotifier {
     }
   }
 
-  Future<bool> create({ int? planId, required String title, DateTime? expiresAt }) async {
+  Future<bool> create({ 
+    int? planId, 
+    required String title, 
+    DateTime? startsAt, 
+    DateTime? endsAt,
+    DateTime? expiresAt 
+  }) async {
     _clearError();
     _setLoading(true);
 
@@ -64,6 +70,8 @@ class TodoController extends ChangeNotifier {
       final todo = await addUseCase( 
         planId: planId, 
         title: title, 
+        startsAt: startsAt,
+        endsAt: endsAt,
         expiresAt: expiresAt 
       );
 
@@ -77,7 +85,14 @@ class TodoController extends ChangeNotifier {
     }
   }
 
-  Future<bool> update({ required int id, int? planId, required String title, DateTime? expiresAt }) async {
+  Future<bool> update({ 
+    required int id, 
+    int? planId, 
+    required String title, 
+    DateTime? startsAt,
+    DateTime? endsAt,
+    DateTime? expiresAt 
+  }) async {
     _clearError();
     _setLoading(true);
 
@@ -86,12 +101,20 @@ class TodoController extends ChangeNotifier {
         id: id, 
         planId: planId, 
         title: title, 
+        startsAt: startsAt,
+        endsAt: endsAt,
         expiresAt: expiresAt 
       );
 
       final index = _todos.indexWhere((todo) => todo.id == id);
       if(index != -1) {
-        _todos[index] = _todos[index].copyWith(planId: planId, title: title, expiresAt: expiresAt);
+        _todos[index] = _todos[index].copyWith(
+          planId: planId, 
+          title: title, 
+          startsAt: startsAt,
+          endsAt: endsAt,
+          expiresAt: expiresAt
+        );
       }
 
       return true;
@@ -107,11 +130,18 @@ class TodoController extends ChangeNotifier {
     _clearError();
     _setLoading(true);
     try {
-      await updateStatusUseCase( id: id, completed: completed );
+      await updateStatusUseCase( 
+        id: id, 
+        completed: completed, 
+      );
+
       final index = _todos.indexWhere((todo) => todo.id == id);
 
       if(index != -1) {
-        _todos[index] = _todos[index].copyWith(completed: completed);
+        _todos[index] = _todos[index].copyWith(
+          completed: completed, 
+          completedAt: completed ? DateTime.now() : null
+        );
       }
 
       return true;

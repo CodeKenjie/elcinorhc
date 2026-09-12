@@ -38,6 +38,8 @@ class _JournalFormPageState extends State<JournalFormPage> {
   }
 
   void _submit() async {
+    if(widget.controller.isLoading) return;
+
     final title = _titleController.text;
     final body = _bodyController.text;
     bool success;

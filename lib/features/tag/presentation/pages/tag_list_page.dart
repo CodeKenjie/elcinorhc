@@ -129,7 +129,7 @@ class _TagListPageState extends State<TagListPage> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.primary
+                  color: const Color.fromARGB(255, 76, 175, 142)
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

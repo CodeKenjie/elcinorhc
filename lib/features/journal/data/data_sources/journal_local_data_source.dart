@@ -58,4 +58,15 @@ class JournalLocalDataSource {
   Future<int> deleteJournal(int id) async {
     return await (localDatabase.delete(localDatabase.journals)..where((journal) => journal.id.equals(id))).go();
   }
+
+  Future<List<JournalModel>> getEntriesBetween({ required DateTime start, required DateTime end }) async {
+    final journals = await (localDatabase.select(localDatabase.journals)..where((journal) => journal.createdAt.isBiggerOrEqualValue(start) & journal.createdAt.isSmallerOrEqualValue(end))).get();
+
+    return journals.map((journal) => JournalModel(
+      id: journal.id, 
+      title: journal.title, 
+      body: journal.body, 
+      createdAt: journal.createdAt
+    )).toList();
+  }
 }

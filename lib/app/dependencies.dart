@@ -1,4 +1,5 @@
 import '../core/database/local/local_database.dart';
+import '../core/services/notification_service.dart';
 import '../features/todo/presentation/controllers/todo_controller.dart';
 import '../features/todo/data/data_sources/todo_local_data_source.dart';
 import '../features/todo/data/repositories/todo_repository_impl.dart';
@@ -64,10 +65,11 @@ import '../features/progress/presentation/controllers/progress_controller.dart';
 
 class AppDependencies {
   static final localDatabase = LocalDatabase();
+  static final notificationService = NotificationService.instance;
   static final authService = AuthService();
 
   static final todoLocalDataSource = TodoLocalDataSource(localDatabase);
-  static final todoRepository = TodoRepositoryImpl(todoLocalDataSource);
+  static final todoRepository = TodoRepositoryImpl(todoLocalDataSource, notificationService);
   static final getAllTodoUseCase = GetAll(todoRepository);
   static final addTodoUseCase = Add(todoRepository);
   static final updateTodoUseCase = Update(todoRepository);

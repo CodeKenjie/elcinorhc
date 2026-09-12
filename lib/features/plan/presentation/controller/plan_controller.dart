@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:elcinorch/core/services/notification_service.dart';
 import '../../domain/entities/plan.dart';
 import '../../domain/usecases/get_plans.dart';
 import '../../domain/usecases/create_plan.dart';
@@ -62,7 +63,6 @@ class PlanController extends ChangeNotifier {
     required DateTime dueAt
   }) async {
     _clearError();
-    _setLoading(true);
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -77,6 +77,8 @@ class PlanController extends ChangeNotifier {
       return false;
     }
 
+    _setLoading(true);
+
     try {
       final plan = await createPlanUseCase(
         title: title,
@@ -85,6 +87,13 @@ class PlanController extends ChangeNotifier {
       );
 
       _plans.add(plan);
+
+      await NotificationService.instance.schedulePlanNotification(
+        planId: plan.id, 
+        title: plan.title, 
+        dueAt: plan.dueAt
+      );
+
       return true;
     } catch (err) {
       _errorMessage = _formattedError(err);
@@ -101,7 +110,6 @@ class PlanController extends ChangeNotifier {
     required DateTime dueAt,
   }) async {
     _clearError();
-    _setLoading(true);
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -115,6 +123,8 @@ class PlanController extends ChangeNotifier {
       _errorMessage = "Title can't be blank.";
       return false;
     }
+
+    _setLoading(true);
 
     try {
       await updatePlanUseCase(
@@ -131,6 +141,12 @@ class PlanController extends ChangeNotifier {
           dueAt: dueAt
         );
       }
+
+      await NotificationService.instance.schedulePlanNotification(
+        planId: id, 
+        title: title, 
+        dueAt: dueAt
+      );
 
       return true;
     } catch (err) {
@@ -160,6 +176,18 @@ class PlanController extends ChangeNotifier {
         );
       }
 
+      if(completed) {
+        await NotificationService.instance.cancelPlanNotifications(id);
+      } else {
+        final plan = _plans.firstWhere((plan) => plan.id == id);
+
+        await NotificationService.instance.schedulePlanNotification(
+          planId: plan.id, 
+          title: plan.title, 
+          dueAt: plan.dueAt
+        );
+      }
+
       return true;
     } catch (err) {
       _errorMessage = _formattedError(err);
@@ -175,6 +203,9 @@ class PlanController extends ChangeNotifier {
 
     try {
       await deletePlanUseCase(id);
+
+      await NotificationService.instance.cancelPlanNotifications(id);
+
       _plans.removeWhere((plan) => plan.id == id);
       return true;
     } catch (err) {

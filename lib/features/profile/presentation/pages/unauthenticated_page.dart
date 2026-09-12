@@ -54,80 +54,87 @@ class _UnauthenticatedPageState extends State<UnauthenticatedPage> {
         final journal = progress.journal;
 
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'E L C I N',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30)
-                ),
-                const Text(
-                  'O R H C', 
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30)
-                ),
-                const SizedBox(height: 50),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => SignInPage())
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 76, 175, 142),
-                      borderRadius: BorderRadius.circular(50)
-                    ),
-                    child: Center(
-                      child: Text(
-                        'I already have an account', 
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  Image.asset(
+                    'lib/assets/images/logo.png',
+                    width: 100,
+                    height: 100,
+                  ),
+                  const Text(
+                    'E L C I N',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30)
+                  ),
+                  const Text(
+                    'O R H C', 
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30)
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => SignInPage())
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 76, 175, 142),
+                        borderRadius: BorderRadius.circular(50)
+                      ),
+                      child: Center(
+                        child: Text(
+                          'I already have an account', 
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                          ),
+                        )
                       )
                     )
-                  )
-                ),
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpPage()
-                      )
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(50)
-                    ),
-                    child: Center(
-                      child: Text(
-                        'I want to make an account', 
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpPage()
+                        )
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(50)
+                      ),
+                      child: Center(
+                        child: Text(
+                          'I want to make an account', 
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
                       )
                     )
-                  )
-                ),
-                const SizedBox(height: 20),
-                StreakCard(progress: journal),
-                TaskProgressCard(progress: planner),
-                JournalProgressCard(progress: journal),
-              ],
+                  ),
+                  const SizedBox(height: 20),
+                  StreakCard(progress: journal),
+                  TaskProgressCard(progress: planner),
+                  JournalProgressCard(progress: journal),
+                ],
+              ),
             ),
           )
         );

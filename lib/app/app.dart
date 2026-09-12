@@ -1,5 +1,6 @@
 import 'package:elcinorch/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:elcinorch/features/journal/presentation/pages/public_journals_page.dart';
+import 'package:elcinorch/core/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../features/todo/presentation/pages/undone_todo_list_page.dart';
@@ -21,6 +22,8 @@ class Elcinorhc extends StatefulWidget {
 class _ElcinorhcState extends State<Elcinorhc> {
   int _currentIndex = 0;
   final authController = AppDependencies.authController;
+  bool notificationEnabled = true;
+  bool? isDark;
 
   final _pages = <Widget>[
     UndoneTodoListPage(),
@@ -90,13 +93,26 @@ class _ElcinorhcState extends State<Elcinorhc> {
               actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
               actions: [
                 GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      notificationEnabled = !notificationEnabled;
+                    });
+
+                    if(notificationEnabled) {
+                      await NotificationService.instance.dailyJournalReminder();
+                    } else {
+                      await NotificationService.instance.cancelAllNotifications();
+                    }
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color:  const Color.fromARGB(255, 76, 175, 142)
                     ),
-                    child: Icon(Icons.notifications, color: Colors.white),
+                    child: notificationEnabled 
+                      ? Icon(Icons.notifications, color: Colors.white) 
+                      : Icon(Icons.notifications_off, color: Colors.white),
                   ),
                 )
               ],
@@ -118,6 +134,11 @@ class _ElcinorhcState extends State<Elcinorhc> {
                             ),
                             child: Column(
                               children: [
+                                Image.asset(
+                                  'lib/assets/images/logo.png',
+                                  width: 80,
+                                  height: 80,
+                                ),
                                 Text('E L C I N', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                 Text('O R H C', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                               ]
@@ -155,7 +176,6 @@ class _ElcinorhcState extends State<Elcinorhc> {
                                           if(success && mounted) {
                                             _currentIndex = 3;
                                           }
-                                          Navigator.pop(context);
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(10),

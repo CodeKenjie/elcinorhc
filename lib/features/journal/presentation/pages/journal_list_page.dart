@@ -41,12 +41,45 @@ class _JournalListPageState extends State<JournalListPage> {
               )
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: AnimatedBuilder(
-                animation: journalController,
-                builder: (context, child) {
-                  final journals = journalController.journals.toList();
-                  return ListView.separated(
+            AnimatedBuilder(
+              animation: journalController,
+              builder: (context, child) {
+                final journals = journalController.journals.toList();
+
+                if(journals.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Theme.of(context).colorScheme.secondary
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'You have no journal yet.',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.tertiary
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Create your first journal. create an account to and you can share it to the world.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.tertiary
+                          ),
+                        )
+                      ]
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
                     itemCount: journals.length,
                     separatorBuilder: ((context, index) {
                       return const SizedBox(height: 10);
@@ -74,10 +107,11 @@ class _JournalListPageState extends State<JournalListPage> {
                         },
                       );
                     }
-                  );
-                }
-              )
+                  ),
+                );
+              }
             ),
+            const SizedBox(height: 10),
             GestureDetector (
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(

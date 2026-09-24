@@ -82,16 +82,10 @@ class GetUserProgress {
 
     DateTime current = DateTime(now.year, now.month, now.day);
 
-    print('STREAK TODAY: $current');
-    print('STREAK JOURNAL DAYS: $journalDays');
-    print('STREAK CONTAINS TODAY: ${journalDays.contains(current)}');
-
     if(!journalDays.contains(current)) {
       current = current.subtract(const Duration(days: 1)); 
-      print('STREAK CHECKING YESTERDAY: $current'); 
 
       if(!journalDays.contains(current)) {
-print('STREAK: No journal today or yesterday');
         return 0;
       }
     }

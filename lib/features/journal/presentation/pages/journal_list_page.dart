@@ -87,8 +87,6 @@ class _JournalListPageState extends State<JournalListPage> {
                     itemBuilder: (context, index) {
                       final journal = journals[index];
 
-                          print('createdAt=${journal.createdAt} isUtc=${journal.createdAt.isUtc}');
-
                       return JournalCard(
                         journal: journal,
                         controller: journalController,

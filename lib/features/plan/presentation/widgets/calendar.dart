@@ -170,6 +170,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     final calendarDays = generateDays(focusedMonth);
 
+
     return Column(
       children: [
         Container(
@@ -244,6 +245,8 @@ class _CalendarState extends State<Calendar> {
                 itemCount: calendarDays.length,
                 itemBuilder: (context, index) {
                   final date = calendarDays[index];
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  final daysFontSize = (screenWidth / 25).clamp(11.0, 14.0);
               
                   final isToday = _isSameDate(
                     date,
@@ -287,7 +290,7 @@ class _CalendarState extends State<Calendar> {
                           },
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: isToday
@@ -296,7 +299,7 @@ class _CalendarState extends State<Calendar> {
                                 ? Color.fromARGB(117, 92, 184, 150)
                                 : Theme.of(context).colorScheme.surface,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(15),
                         color: isSelected
                             ? const Color.fromARGB(255, 76, 175, 142)
                             : isPast
@@ -309,6 +312,7 @@ class _CalendarState extends State<Calendar> {
                           Text(
                             '${date.day}',
                             style: TextStyle(
+                              fontSize: daysFontSize,
                               color: isSelected
                                   ? Colors.white
                                   : isPast

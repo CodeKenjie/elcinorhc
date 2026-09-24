@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../../domain/entities/journal_progress.dart';
 
 class StreakCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class StreakCard extends StatelessWidget {
             Text(
               '${progress.currentStreak}',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: context.sp(28),
                 fontWeight: FontWeight.bold
               ),
             ),
@@ -27,7 +28,7 @@ class StreakCard extends StatelessWidget {
             Text(
               'Current Streak',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: context.sp(14),
                 fontWeight: FontWeight.bold
               ),
             )

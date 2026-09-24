@@ -1,4 +1,5 @@
 import 'package:elcinorch/features/journal/presentation/widgets/shared_journal_card.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +87,7 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: const Color.fromARGB(255, 76, 175, 142),
-                          child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: 30)),
+                          child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: context.sp(30))),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -97,20 +98,20 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
                               Text(
                                 _capitalize("${user.firstName} ${user.lastName}"),
                                 style: TextStyle(
-                                  fontSize: 24
+                                  fontSize: context.sp(24)
                                 ),
                               ),
                               Text(
                                 user.email,
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: context.sp(14),
                                   color: Theme.of(context).colorScheme.tertiary
                                 ),
                               ),
                               Text(
                                 _formattedDate(user.dateOfBirth),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: context.sp(12),
                                   color: Theme.of(context).colorScheme.tertiary
                                 ),
                               ),

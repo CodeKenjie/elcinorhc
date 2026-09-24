@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../controller/plan_controller.dart';
 import 'plan_form_dialog.dart';
 
@@ -188,8 +189,8 @@ class _CalendarState extends State<Calendar> {
               ),
               Text(
                 '${_monthName(focusedMonth.month)} ${focusedMonth.year}',
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: context.sp(20),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -214,7 +215,7 @@ class _CalendarState extends State<Calendar> {
                   child: Text(
                     day,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: context.sp(14),
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
@@ -245,8 +246,6 @@ class _CalendarState extends State<Calendar> {
                 itemCount: calendarDays.length,
                 itemBuilder: (context, index) {
                   final date = calendarDays[index];
-                  final screenWidth = MediaQuery.of(context).size.width;
-                  final daysFontSize = (screenWidth / 25).clamp(11.0, 14.0);
               
                   final isToday = _isSameDate(
                     date,
@@ -312,7 +311,7 @@ class _CalendarState extends State<Calendar> {
                           Text(
                             '${date.day}',
                             style: TextStyle(
-                              fontSize: daysFontSize,
+                              fontSize: context.sp(12),
                               color: isSelected
                                   ? Colors.white
                                   : isPast
@@ -329,24 +328,26 @@ class _CalendarState extends State<Calendar> {
                             ),
                           ),
                           if (planCount > 0)
-                            Column(
-                              children: List.generate(
-                                min(planCount, 3),
-                                (index) {
-                                  return Container(
-                                    width: double.infinity,
-                                    height: 3,
-                                    margin: const EdgeInsets.only(
-                                      top: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: planColors[
-                                          index % planColors.length],
-                                      borderRadius:
-                                          BorderRadius.circular(2),
-                                    ),
-                                  );
-                                },
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Wrap(
+                                  spacing: 3,
+                                  runSpacing: 3,
+                                  children: List.generate(
+                                    planCount,
+                                    (index) {
+                                      return Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: planColors[
+                                              index % planColors.length],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                         ],

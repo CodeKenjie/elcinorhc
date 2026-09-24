@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../widgets/tag_form_dialog.dart';
 import '../widgets/tag_card.dart';
 
@@ -37,7 +38,7 @@ class _TagListPageState extends State<TagListPage> {
           children: [
             Icon(Icons.label),
             const SizedBox(width: 10),
-            Text('Tags', style: TextStyle(fontSize: 20))
+            Text('Tags', style: TextStyle(fontSize: context.sp(20)))
           ],
         )
       ),
@@ -49,7 +50,7 @@ class _TagListPageState extends State<TagListPage> {
             Text(
               'Tags',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: context.sp(14),
                 color: Theme.of(context).colorScheme.tertiary
               ),
             ),
@@ -80,7 +81,7 @@ class _TagListPageState extends State<TagListPage> {
                         Text(
                           'No tags yet',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: context.sp(24),
                             fontWeight: FontWeight.bold
                           ),
                         ),
@@ -88,7 +89,7 @@ class _TagListPageState extends State<TagListPage> {
                         Text(
                           'Create your own tag now',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: context.sp(16),
                             color: Theme.of(context).colorScheme.tertiary
                           )
                         )
@@ -139,7 +140,7 @@ class _TagListPageState extends State<TagListPage> {
                     Text(
                       'Create tag',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: context.sp(20),
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.surface
                       )

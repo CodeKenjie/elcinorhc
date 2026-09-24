@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/plan.dart';
 import '../controller/plan_controller.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class PlanFormDialog extends StatefulWidget {
   final Plan? plan;
@@ -122,7 +123,7 @@ class _PlanFormDialogState extends State<PlanFormDialog> {
                   Text(
                     'Due date',
                     style: TextStyle(
-                      fontSize: 12
+                      fontSize: context.sp(12)
                     ),
                   ),
                   const SizedBox(height: 3),

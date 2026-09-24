@@ -1,5 +1,6 @@
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:elcinorch/features/journal/presentation/widgets/journal_form_page.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import 'package:flutter/material.dart';
 import '../widgets/journal_card.dart';
 
@@ -36,7 +37,7 @@ class _JournalListPageState extends State<JournalListPage> {
           children: [
             Text ('Journals', 
               style: TextStyle(
-                fontSize: 16, 
+                fontSize: context.sp(16), 
                 color: Theme.of(context).colorScheme.tertiary
               )
             ),
@@ -59,7 +60,7 @@ class _JournalListPageState extends State<JournalListPage> {
                         Text(
                           'You have no journal yet.',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: context.sp(24),
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.tertiary
                           ),
@@ -68,7 +69,7 @@ class _JournalListPageState extends State<JournalListPage> {
                         Text(
                           'Create your first journal. create an account to and you can share it to the world.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: context.sp(14),
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.tertiary
                           ),
@@ -135,7 +136,7 @@ class _JournalListPageState extends State<JournalListPage> {
                     Text(
                       'Create journal',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: context.sp(20),
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.surface
                       ),

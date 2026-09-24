@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../domain/entities/tag.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class TagCard extends StatelessWidget {
   final Tag? tag;
@@ -54,7 +55,7 @@ class TagCard extends StatelessWidget {
             Text(
               tag!.name,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: context.sp(20),
                 fontWeight: FontWeight.bold
               )
             )

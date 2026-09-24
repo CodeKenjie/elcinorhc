@@ -5,6 +5,7 @@ import 'package:elcinorch/features/plan/domain/entities/plan.dart';
 import 'package:elcinorch/features/todo/presentation/controllers/todo_controller.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:elcinorch/features/todo/domain/entities/todo.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class PlanCard extends StatelessWidget {
   final Plan plan;
@@ -99,14 +100,14 @@ class PlanCard extends StatelessWidget {
                         Text(
                           plan.title,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: context.sp(20),
                             fontWeight: FontWeight.bold
                           ),
                         ),
                         Text(
                           plan.dueAt.isBefore(today) ? 'Expired plan' : _formattedDate(plan.dueAt),
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: context.sp(14),
                             color: Theme.of(context).colorScheme.tertiary
                           ),
                         ),
@@ -134,7 +135,7 @@ class PlanCard extends StatelessWidget {
                   Text(
                     plan.body ?? '',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: context.sp(18),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -214,7 +215,7 @@ class PlanCard extends StatelessWidget {
                               Text(
                                 'Expired Task',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: context.sp(14),
                                   color: Theme.of(context).colorScheme.tertiary
                                 ),
                               ),
@@ -243,7 +244,7 @@ class PlanCard extends StatelessWidget {
                           Text(
                             'Add task',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: context.sp(16),
                               color: Colors.white
                             ),
                           )
@@ -271,7 +272,7 @@ class PlanCard extends StatelessWidget {
                       Text(
                         '${(calculateProgress(todos) * 100).round()}%',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: context.sp(14),
                           color: const Color.fromARGB(255, 76, 175, 142),
                         ),
                       )

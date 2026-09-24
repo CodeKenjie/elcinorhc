@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../../domain/entities/journal_progress.dart';
 
 class JournalProgressCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class JournalProgressCard extends StatelessWidget {
             Text(
               '${progress.daysJournaled} / ${progress.daysInPeriod} days',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: context.sp(20),
                 fontWeight: FontWeight.bold
               ),
             ),

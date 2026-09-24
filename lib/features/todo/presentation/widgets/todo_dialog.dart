@@ -133,141 +133,143 @@ class _TodoDialogState extends State<TodoDialog> {
       animation: widget.controller, 
       builder: (context, child) {
         final screenSize = MediaQuery.of(context).size;
-        return AlertDialog(
-          title: Text(widget.isEditing ? 'Edit Task' : 'Create Task'),
-          content: SizedBox(
-            width: math.min(screenSize.width * 0.9, 400),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    hintText: 'Task name',
-                    border: OutlineInputBorder(),
-                    labelText: 'Task name'
+        return SingleChildScrollView(
+          child: AlertDialog(
+            title: Text(widget.isEditing ? 'Edit Task' : 'Create Task'),
+            content: SizedBox(
+              width: math.min(screenSize.width * 0.9, 400),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      hintText: 'Task name',
+                      border: OutlineInputBorder(),
+                      labelText: 'Task name'
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: const EdgeInsets.only(left: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary)
+                  const SizedBox(height: 16),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary)
+                    ),
+                    leading: const Icon(Icons.calendar_today),
+                    title: Text( _expiresAt == null ? 'Expiration Date' : DateFormat('MMM d, y').format(_expiresAt!)),
+                    onTap: () async {
+                      final now = DateTime.now();
+                      final today = DateTime(now.year, now.month, now.day);
+                      final initial = _expiresAt ?? DateTime.now();
+                      final pickedDate = await showDatePicker(
+                        context: context, 
+                        initialDate: initial,
+                        firstDate: initial.isBefore(today) ? initial : today, 
+                        lastDate: DateTime(3064)
+                      );
+          
+                      if(!mounted) return;
+                      if (pickedDate != null) {
+                        setState(() {
+                          _expiresAt = pickedDate;
+                        });
+                      }
+                    },
+                    trailing: _expiresAt != null ? TextButton(
+                      child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
+                      onPressed: () {
+                        setState(() {
+                          _expiresAt = null;
+                        });
+                      }, 
+                    ) : null,
                   ),
-                  leading: const Icon(Icons.calendar_today),
-                  title: Text( _expiresAt == null ? 'Expiration Date' : DateFormat('MMM d, y').format(_expiresAt!)),
-                  onTap: () async {
-                    final now = DateTime.now();
-                    final today = DateTime(now.year, now.month, now.day);
-                    final initial = _expiresAt ?? DateTime.now();
-                    final pickedDate = await showDatePicker(
-                      context: context, 
-                      initialDate: initial,
-                      firstDate: initial.isBefore(today) ? initial : today, 
-                      lastDate: DateTime(3064)
-                    );
-
-                    if(!mounted) return;
-                    if (pickedDate != null) {
-                      setState(() {
-                        _expiresAt = pickedDate;
-                      });
-                    }
-                  },
-                  trailing: _expiresAt != null ? TextButton(
-                    child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
-                    onPressed: () {
-                      setState(() {
-                        _expiresAt = null;
-                      });
-                    }, 
-                  ) : null,
-                ),
-
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: const EdgeInsets.only(left: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary)
+          
+                  const SizedBox(height: 16),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary)
+                    ),
+                    leading: const Icon(Icons.schedule),
+                    title: Text(
+                      _startsAt == null 
+                      ? 'Start time' 
+                      : DateFormat('MMM d, y • h:mm a').format(_startsAt!)
+                    ),
+                    onTap: () async {
+                      final pickedStart = await _pickDateTime(
+                        initialDateTime: _startsAt,
+                        expiresAt: _expiresAt ?? DateTime.now()
+                      );
+                       
+                      if(!mounted) return;
+                      if (pickedStart != null) {
+                        setState(() {
+                          _startsAt = pickedStart;
+                        });
+                      }
+                    },
+                    trailing: _startsAt != null ? TextButton(
+                      child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
+                      onPressed: () {
+                        setState(() {
+                          _startsAt = null;
+                        });
+                      }, 
+                    ) : null,
                   ),
-                  leading: const Icon(Icons.schedule),
-                  title: Text(
-                    _startsAt == null 
-                    ? 'Start time' 
-                    : DateFormat('MMM d, y • h:mm a').format(_startsAt!)
+                  const SizedBox(height: 16),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary)
+                    ),
+                    leading: const Icon(Icons.schedule),
+                    title: Text(
+                      _endsAt == null 
+                      ? 'End time' 
+                      : DateFormat('MMM d, y • h:mm a').format(_endsAt!)
+                    ),
+                    onTap: () async {
+                      final pickedEnd = await _pickDateTime(
+                        initialDateTime: _endsAt ?? _startsAt,
+                        expiresAt: _expiresAt ?? DateTime.now()
+                      );
+                       
+                      if(!mounted) return;
+                      if (pickedEnd != null) {
+                        setState(() {
+                          _endsAt = pickedEnd;
+                        });
+                      }
+                    },
+                    trailing: _endsAt != null ? TextButton(
+                      child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
+                      onPressed: () {
+                        setState(() {
+                          _endsAt = null;
+                        });
+                      }, 
+                    ) : null,
                   ),
-                  onTap: () async {
-                    final pickedStart = await _pickDateTime(
-                      initialDateTime: _startsAt,
-                      expiresAt: _expiresAt ?? DateTime.now()
-                    );
-                     
-                    if(!mounted) return;
-                    if (pickedStart != null) {
-                      setState(() {
-                        _startsAt = pickedStart;
-                      });
-                    }
-                  },
-                  trailing: _startsAt != null ? TextButton(
-                    child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
-                    onPressed: () {
-                      setState(() {
-                        _startsAt = null;
-                      });
-                    }, 
-                  ) : null,
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: const EdgeInsets.only(left: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary)
-                  ),
-                  leading: const Icon(Icons.schedule),
-                  title: Text(
-                    _endsAt == null 
-                    ? 'End time' 
-                    : DateFormat('MMM d, y • h:mm a').format(_endsAt!)
-                  ),
-                  onTap: () async {
-                    final pickedEnd = await _pickDateTime(
-                      initialDateTime: _endsAt ?? _startsAt,
-                      expiresAt: _expiresAt ?? DateTime.now()
-                    );
-                     
-                    if(!mounted) return;
-                    if (pickedEnd != null) {
-                      setState(() {
-                        _endsAt = pickedEnd;
-                      });
-                    }
-                  },
-                  trailing: _endsAt != null ? TextButton(
-                    child: const Text('clear', style: TextStyle(color: Colors.redAccent),),
-                    onPressed: () {
-                      setState(() {
-                        _endsAt = null;
-                      });
-                    }, 
-                  ) : null,
-                ),
-              ],
+                ],
+              ),
             ),
+            actions: [
+              TextButton(
+                onPressed: widget.controller.isLoading ? null : () { Navigator.pop(context); }, 
+                child: const Text('Cancel')
+              ),
+              TextButton(
+                onPressed: widget.controller.isLoading ? null : _submit, 
+                child: widget.controller.isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Text(widget.isEditing ? 'Save' : 'Add')
+              )
+            ]
           ),
-          actions: [
-            TextButton(
-              onPressed: widget.controller.isLoading ? null : () { Navigator.pop(context); }, 
-              child: const Text('Cancel')
-            ),
-            TextButton(
-              onPressed: widget.controller.isLoading ? null : _submit, 
-              child: widget.controller.isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Text(widget.isEditing ? 'Save' : 'Add')
-            )
-          ]
         );
       },
     );

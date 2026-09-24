@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_card.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class CompletedTodoListPage extends StatefulWidget {
   const CompletedTodoListPage({super.key});
@@ -35,7 +36,7 @@ class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
             Text(
               'Completed task',
               style: TextStyle(
-                fontSize: 20
+                fontSize: context.sp(20)
               )
             )
           ],
@@ -69,7 +70,7 @@ class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
                 Text(
                   'Completed Tasks',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: context.sp(14),
                     color: Theme.of(context).colorScheme.tertiary
                   ),
                 ),
@@ -111,7 +112,7 @@ class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
                       Text(
                         'Forgotten Tasks',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: context.sp(14),
                           color: Theme.of(context).colorScheme.tertiary
                         ),
                       ),
@@ -168,7 +169,7 @@ class _CompletedTodoListPageState extends State<CompletedTodoListPage> {
         message,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 20,
+          fontSize: context.sp(20),
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.tertiary
         ),

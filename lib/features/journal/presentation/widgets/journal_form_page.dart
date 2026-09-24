@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../../domain/entities/journal.dart';
 import '../../presentation/controllers/journal_controller.dart';
 
@@ -120,7 +121,7 @@ class _JournalFormPageState extends State<JournalFormPage> {
             Text(
               widget.isEditing ? widget.journal!.title : 'Create journal',
               style: TextStyle(
-                fontSize: 20
+                fontSize: context.sp(20)
               )
             )
           ],
@@ -143,7 +144,7 @@ class _JournalFormPageState extends State<JournalFormPage> {
               minLines: 1,
               maxLines: 5,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: context.sp(20),
                 fontWeight: FontWeight.bold
               ),
               decoration: InputDecoration(
@@ -159,7 +160,7 @@ class _JournalFormPageState extends State<JournalFormPage> {
               minLines: 1,
               keyboardType: TextInputType.multiline,
               style: TextStyle(
-                fontSize: 16
+                fontSize: context.sp(16)
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,

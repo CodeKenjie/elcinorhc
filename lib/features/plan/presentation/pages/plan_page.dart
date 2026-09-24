@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:elcinorch/features/plan/presentation/widgets/plan_form_dialog.dart';
 import 'package:elcinorch/app/dependencies.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../widgets/calendar.dart';
 import '../widgets/plan_card.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
@@ -47,7 +48,7 @@ class _PlanPageState extends State<PlanPage> {
               Text (
                 'Plans',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: context.sp(14),
                   color:Theme.of(context).colorScheme.tertiary
                 ),
               ),
@@ -87,7 +88,7 @@ class _PlanPageState extends State<PlanPage> {
                                 Text(
                                   'No plans for this date.',
                                   style: TextStyle(
-                                    fontSize: 24, 
+                                    fontSize: context.sp(24), 
                                     fontWeight: FontWeight.bold, 
                                     color: Theme.of(context).colorScheme.tertiary
                                   ),
@@ -96,7 +97,7 @@ class _PlanPageState extends State<PlanPage> {
                                 Text(
                                   'Long press the date, or click the add "+" button to create a plan.',
                                   style: TextStyle(
-                                    fontSize: 16, 
+                                    fontSize: context.sp(16), 
                                     color: Theme.of(context).colorScheme.tertiary
                                   ),
                                 ),

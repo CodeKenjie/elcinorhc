@@ -1,4 +1,5 @@
 import 'package:elcinorch/features/journal/presentation/controllers/journal_controller.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import 'package:elcinorch/features/tag/presentation/controllers/tag_controller.dart';
 import 'package:elcinorch/features/tag/domain/entities/tag.dart';
 import 'package:flutter/material.dart';
@@ -156,14 +157,14 @@ class _JournalCardState extends State<JournalCard> {
                             Text(
                               widget.journal.title,
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: context.sp(20),
                                 fontWeight: FontWeight.bold
                               ),
                             ),
                             Text(
                               _formattedDate(widget.journal.createdAt),
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: context.sp(14),
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.tertiary
                               ),
@@ -192,7 +193,7 @@ class _JournalCardState extends State<JournalCard> {
                                   Text(
                                     'Share',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: context.sp(14),
                                       color: Theme.of(context).colorScheme.secondary
                                     )
                                   ),

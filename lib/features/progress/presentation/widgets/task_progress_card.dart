@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import '../../domain/entities/planner_progress.dart';
 
 class TaskProgressCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class TaskProgressCard extends StatelessWidget {
             Text(
               '${progress.completedTodos} / ${progress.totalTodo} tasks',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: context.sp(20),
                 fontWeight: FontWeight.bold
               ),
             ),

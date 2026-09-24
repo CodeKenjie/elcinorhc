@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:elcinorch/features/todo/presentation/widgets/todo_card.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class UndoneTodoListPage extends StatefulWidget {
   const UndoneTodoListPage({super.key});
@@ -78,7 +79,7 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
                 Text(
                   'Todays Tasks',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: context.sp(14),
                     color: Theme.of(context).colorScheme.tertiary
                   ),
                 ),
@@ -122,7 +123,7 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
                       Text(
                         'Unplanned Tasks',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: context.sp(14),
                           color: Theme.of(context).colorScheme.tertiary
                         ),
                       ),
@@ -193,7 +194,7 @@ class _UndoneTodoListPageState extends State<UndoneTodoListPage> {
         message,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 20,
+          fontSize: context.sp(20),
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.tertiary
         ),

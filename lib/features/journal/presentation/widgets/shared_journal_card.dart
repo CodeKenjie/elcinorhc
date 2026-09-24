@@ -1,6 +1,7 @@
 import 'package:elcinorch/features/auth/domain/entities/user.dart';
 import 'package:elcinorch/features/journal/domain/entities/shared_journal.dart';
 import 'package:elcinorch/features/journal/presentation/controllers/journal_controller.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -50,7 +51,7 @@ class SharedJournalCard extends StatelessWidget {
               CircleAvatar(
                 radius: 20,
                 backgroundColor: const Color.fromARGB(255, 76, 175, 142),
-                child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: 16)),
+                child: Text(nameInitial(user.firstName), style: TextStyle(fontSize: context.sp(16))),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -60,14 +61,14 @@ class SharedJournalCard extends StatelessWidget {
                     Text(
                       '${_capitalize(user.firstName)} ${_capitalize(user.lastName)}',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: context.sp(20),
                         fontWeight: FontWeight.bold
                       ),
                     ),
                     Text(
                       user.email,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: context.sp(12),
                         color: Theme.of(context).colorScheme.tertiary
                       ),
                     ),
@@ -91,7 +92,7 @@ class SharedJournalCard extends StatelessWidget {
           Text(
             'shared: ${_formattedDate(shared.sharedAt)}',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: context.sp(14),
               color: Theme.of(context).colorScheme.tertiary
             ),
           ),
@@ -103,14 +104,14 @@ class SharedJournalCard extends StatelessWidget {
                 Text(
                   shared.journal.title,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: context.sp(24),
                     fontWeight: FontWeight.bold
                   ),
                 ),
                 Text(
                   shared.journal.body,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: context.sp(14),
                   ),
                 )
               ],

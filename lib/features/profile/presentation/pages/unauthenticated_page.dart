@@ -5,6 +5,7 @@ import 'package:elcinorch/app/dependencies.dart';
 import '../../../progress/presentation/widgets/task_progress_card.dart';
 import '../../../progress/presentation/widgets/journal_progress_card.dart';
 import '../../../progress/presentation/widgets/streak_card.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class UnauthenticatedPage extends StatefulWidget {
   const UnauthenticatedPage({super.key});
@@ -66,15 +67,15 @@ class _UnauthenticatedPageState extends State<UnauthenticatedPage> {
                     width: 100,
                     height: 100,
                   ),
-                  const Text(
+                  Text(
                     'E L C I N',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30)
+                    style: TextStyle(fontSize: context.sp(30))
                   ),
-                  const Text(
+                  Text(
                     'O R H C', 
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30)
+                    style: TextStyle(fontSize: context.sp(30))
                   ),
                   const SizedBox(height: 20),
                   GestureDetector(
@@ -94,7 +95,7 @@ class _UnauthenticatedPageState extends State<UnauthenticatedPage> {
                         child: Text(
                           'I already have an account', 
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: context.sp(20),
                             fontWeight: FontWeight.bold,
                             color: Colors.white
                           ),
@@ -122,7 +123,7 @@ class _UnauthenticatedPageState extends State<UnauthenticatedPage> {
                         child: Text(
                           'I want to make an account', 
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: context.sp(20),
                             fontWeight: FontWeight.bold,
                           ),
                         )

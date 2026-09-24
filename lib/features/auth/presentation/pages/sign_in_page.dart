@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:elcinorch/app/dependencies.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -57,7 +58,7 @@ class _SignInPageState extends State<SignInPage> {
                   Text(
                     'Sign in',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: context.sp(30),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -103,7 +104,7 @@ class _SignInPageState extends State<SignInPage> {
                             ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary)) :  Text(
                               'Sign in', 
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: context.sp(20),
                                 color: Colors.white
                               )
                             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:elcinorch/features/todo/domain/entities/todo.dart';
+import 'package:elcinorch/core/extensions/responsive_text.dart';
 import 'dart:async';
 
 class TodoCard extends StatefulWidget {
@@ -153,29 +154,59 @@ class _TodoCardState extends State<TodoCard> {
                           widget.todo.title, 
                           overflow: TextOverflow.clip,
                           style: TextStyle(
-                            fontSize: 20
+                            fontSize: context.sp(20)
                           ) 
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text ( 
-                              'created: ${formatDate(widget.todo.createdAt)}',
-                              style: TextStyle(
-                                fontSize: 12, 
-                                color: Theme.of(context).colorScheme.tertiary
-                              ) 
-                            ),
-                            if(widget.todo.expiresAt != null) ... [
-                              Text ( 
-                                'expr: ${formatDate(widget.todo.expiresAt)}',
-                                style: TextStyle(
-                                  fontSize: 12, 
-                                  color: Theme.of(context).colorScheme.tertiary
-                                ) 
-                              ),
-                            ]
-                          ],
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final isNarrow = constraints.maxWidth < 300;
+
+                            if(isNarrow) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text ( 
+                                    'created: ${formatDate(widget.todo.createdAt)}',
+                                    style: TextStyle(
+                                      fontSize: context.sp(12), 
+                                      color: Theme.of(context).colorScheme.tertiary
+                                    ) 
+                                  ),
+                                  if(widget.todo.expiresAt != null) ... [
+                                    Text ( 
+                                      'expr: ${formatDate(widget.todo.expiresAt)}',
+                                      style: TextStyle(
+                                        fontSize: context.sp(12), 
+                                        color: Theme.of(context).colorScheme.tertiary
+                                      ) 
+                                    ),
+                                  ]
+                                ],
+                              );
+                            }
+
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text ( 
+                                  'created: ${formatDate(widget.todo.createdAt)}',
+                                  style: TextStyle(
+                                    fontSize: context.sp(12), 
+                                    color: Theme.of(context).colorScheme.tertiary
+                                  ) 
+                                ),
+                                if(widget.todo.expiresAt != null) ... [
+                                  Text ( 
+                                    'expr: ${formatDate(widget.todo.expiresAt)}',
+                                    style: TextStyle(
+                                      fontSize: context.sp(12), 
+                                      color: Theme.of(context).colorScheme.tertiary
+                                    ) 
+                                  ),
+                                ]
+                              ],
+                            );
+                          }
                         )
                       ],
                     )
@@ -192,7 +223,7 @@ class _TodoCardState extends State<TodoCard> {
                         Text (
                           formatTime(widget.todo.startsAt),
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: context.sp(14),
                             color: Theme.of(context).colorScheme.tertiary
                           ),
                         ),
@@ -212,7 +243,7 @@ class _TodoCardState extends State<TodoCard> {
                         Text (
                           formatTime(widget.todo.endsAt),
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: context.sp(14),
                             color: Theme.of(context).colorScheme.tertiary
                           ),
                         ),
@@ -221,14 +252,14 @@ class _TodoCardState extends State<TodoCard> {
                       Text (
                         'Completed at:',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: context.sp(14),
                           color: Theme.of(context).colorScheme.tertiary
                         ),
                       ),
                       Text (
                         formatDateTime(widget.todo.completedAt),
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: context.sp(14),
                           color: Theme.of(context).colorScheme.tertiary
                         ),
                       ),
